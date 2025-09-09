@@ -1,17 +1,17 @@
 "use client";
 import React, { useMemo, useState } from "react";
 
-// ---- Media files (in /public/media/) ----
+// ---- Media files in /public/media (names must match exactly; ?v=3 busts cache) ----
 const MEDIA = {
-  videoBefore: "/media/toontail-before.mp4?v=2",
-  videoAfter:  "/media/toontail-after.mp4?v=2",
-  posterBefore: "/media/toontail-before.jpg",
-  posterAfter:  "/media/toontail-after.jpg",
-  photoBefore: "/media/toontail-photo-before.jpg",
-  photoAfter:  "/media/toontail-photo-after.jpg",
-}; // <-- IMPORTANT: this closes MEDIA
+  videoBefore: "/media/toontail-before.mp4?v=3",
+  videoAfter:  "/media/toontail-after.mp4?v=3",
+  posterBefore: "/media/toontail-before.jpg?v=3",
+  posterAfter:  "/media/toontail-after.jpg?v=3",
+  photoBefore: "/media/toontail-photo-before.jpg?v=3",
+  photoAfter:  "/media/toontail-photo-after.jpg?v=3",
+};
 
-// Extra gallery images (exact filenames)
+// Extra gallery images (exact filenames from /public/media)
 const EXTRAS = [
   "/media/Alt1.jpeg",
   "/media/Alt2.jpeg",
@@ -21,13 +21,6 @@ const EXTRAS = [
   "/media/Without_ToonTail.jpeg",
   "/media/ToonTail_Logo.jpeg",
 ];
-  videoBefore: "/media/toontail-before.mp4",
-  videoAfter:  "/media/toontail-after.mp4",
-  posterBefore: "/media/toontail-before.jpg",
-  posterAfter:  "/media/toontail-after.jpg",
-  photoBefore: "/media/toontail-photo-before.jpg",
-  photoAfter:  "/media/toontail-photo-after.jpg",
-};
 
 export default function Page() {
   return <ToonTailLanding />;
@@ -45,7 +38,10 @@ function ToonTailLanding() {
     intakeAssist: false,
   });
 
-  const reducerRatio = useMemo(() => estimator.reducerFrom / estimator.reducerTo, [estimator]);
+  const reducerRatio = useMemo(
+    () => estimator.reducerFrom / estimator.reducerTo,
+    [estimator]
+  );
 
   const estimation = useMemo(() => {
     const v = Math.max(0, estimator.speedMph);
@@ -57,14 +53,16 @@ function ToonTailLanding() {
     const base = (v / 35) * 1.0 * reducerGain * assistGain;
     const heightFt = Math.round(10 * base * Math.sin(effAngle) * 1.8);
     const distanceFt = Math.round(10 * base * Math.cos(effAngle) * 2.2);
-    const cleanliness = Math.max(1, Math.min(5, Math.round(3 + (estimator.pipeAngle - 28) / 10 - estimator.trimDeg * 0.05)));
+    const cleanliness = Math.max(
+      1,
+      Math.min(5, Math.round(3 + (estimator.pipeAngle - 28) / 10 - estimator.trimDeg * 0.05))
+    );
     return { heightFt, distanceFt, cleanliness };
   }, [estimator, reducerRatio]);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setSubmitted(true);
-    // TODO: wire to Mailchimp/Klaviyo or email API
   }
 
   return (
@@ -76,51 +74,14 @@ function ToonTailLanding() {
         <p className="text-lg md:text-xl max-w-3xl">
           ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures prop wash and
           redirects it through a tuned outlet to create a clean, dramatic rooster tail—without sacrificing your day on
-          the water. Version 2.0 adds adjustable geometry for height, distance, and water cleanliness tuning.
+          the water.
         </p>
-        <ul className="grid md:grid-cols-3 gap-4 mt-8">
-          {[
-            { t: "Bolt-on simplicity", d: "Reinforced 316 stainless mount for quick install." },
-            { t: "Tunable performance", d: "Adjust angle (30°–45°), standoff, and outlet shape." },
-            { t: "Built for big outboards", d: "Tested on 300–350 HP with 4→3 in reducer and smooth taper." },
-          ].map((f, i) => (
-            <li key={i} className="p-5 rounded-2xl bg-white shadow-sm border border-slate-100">
-              <h3 className="font-semibold mb-1 text-slate-900">{f.t}</h3>
-              <p className="text-slate-600">{f.d}</p>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section id="proto" title="Two prototypes we’re testing" eyebrow="A/B for the perfect tail">
-        <div className="grid lg:grid-cols-2 gap-6">
-          <Card>
-            <Badge>Version A</Badge>
-            <h3 className="text-xl font-semibold">Baseline 30° w/ 4→3 smooth taper</h3>
-            <ul className="mt-3 text-slate-600 list-disc list-inside">
-              <li>Pipe angle fixed at 30° (trim 0–5° typical)</li>
-              <li>Reducer: smooth 6–8" taper; outlet round 3"</li>
-              <li>Standoff: ~5" from prop, intake flush with AV plate</li>
-              <li>Goal: consistent tail with minimal cavitation</li>
-            </ul>
-          </Card>
-          <Card>
-            <Badge>Version B</Badge>
-            <h3 className="text-xl font-semibold">Adjustable 30–45° + optional gill/interceptor</h3>
-            <ul className="mt-3 text-slate-600 list-disc list-inside">
-              <li>Hinged plate allows quick angle changes</li>
-              <li>Optional gill/interceptor scoop to pre-charge intake</li>
-              <li>Outlet: oval/teardrop plate for higher arc “punch”</li>
-              <li>Goal: taller/cleaner tail at neutral trim</li>
-            </ul>
-          </Card>
-        </div>
       </Section>
 
       <Section id="estimator" title="Tail estimator (beta)" eyebrow="Back-of-napkin physics">
         <div className="grid md:grid-cols-2 gap-6 items-start">
           <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-            <form className="grid grid-cols-2 gap-4" id="waitlist">
+            <form className="grid grid-cols-2 gap-4" id="waitlist" onSubmit={onSubmit}>
               <LabeledInput label="Boat speed (mph)" type="number" value={estimator.speedMph} onChange={(v: string) => setEstimator((s) => ({ ...s, speedMph: Number(v) }))} />
               <LabeledInput label="Pipe angle (°)" type="number" value={estimator.pipeAngle} onChange={(v: string) => setEstimator((s) => ({ ...s, pipeAngle: Number(v) }))} />
               <LabeledInput label="Motor trim (°)" type="number" value={estimator.trimDeg} onChange={(v: string) => setEstimator((s) => ({ ...s, trimDeg: Number(v) }))} />
@@ -140,6 +101,7 @@ function ToonTailLanding() {
                 <input type="checkbox" checked={estimator.intakeAssist} onChange={(e) => setEstimator((s) => ({ ...s, intakeAssist: e.target.checked }))} />
                 Add gill/interceptor assist
               </label>
+              <button className="col-span-2 mt-1 px-4 py-2 rounded-xl bg-sky-600 text-white">Join waitlist</button>
             </form>
             <p className="text-xs text-slate-500 mt-3">*Estimator is indicative only and not a guarantee of actual performance.</p>
           </div>
@@ -164,90 +126,26 @@ function ToonTailLanding() {
             <BeforeAfter beforeSrc={MEDIA.photoBefore} afterSrc={MEDIA.photoAfter} />
           </Card>
           <Card>
-            <h3 className="text-lg font-semibold">More angles</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {[1,2,3,4].map((i) => (
-                <div key={i} className="aspect-[4/3] rounded-xl bg-gradient-to-br from-sky-200 to-indigo-200 flex items-center justify-center text-slate-700">
-                  <span className="text-xs">Add photo {i}</span>
-                </div>
-              ))}
-            </div>
+            <h3 className="text-lg font-semibold">Hero video</h3>
+            <HeroVideo />
           </Card>
         </div>
       </Section>
 
-      <Section id="cta" title="Be first to know" eyebrow="Join the waitlist">
-        <div className="grid md:grid-cols-2 gap-6 items-center">
-          <div className="text-slate-700">
-            <p className="text-lg">We’re finalizing production specs now. Join the list for early access, launch pricing, and dealer opportunities.</p>
-            <ul className="mt-4 space-y-2 list-disc list-inside">
-              <li>Early-bird pricing & limited Founder’s run</li>
-              <li>Installer/dealer priority for demo units</li>
-              <li>Tech bulletins, install guides, and A/B test results</li>
-            </ul>
-          </div>
-          <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-            {submitted ? (
-              <div className="text-center">
-                <h4 className="text-xl font-semibold">You’re on the list! 🎉</h4>
-                <p className="text-slate-600 mt-2">We’ll email updates as soon as we have test footage and pre-order details.</p>
-              </div>
-            ) : (
-              <form onSubmit={onSubmit} className="grid gap-3">
-                <LabeledInput label="Email" type="email" placeholder="you@example.com" value={email} onChange={(v: string) => setEmail(v)} required />
-                <LabeledInput label="How do you plan to use ToonTail? (optional)" type="text" placeholder="Pontoon/tritoon model, engine, goals" />
-                <button className="mt-2 px-5 py-3 rounded-2xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700 transition">
-                  Join waitlist
-                </button>
-                <p className="text-xs text-slate-500">By joining, you agree to receive ToonTail emails. Unsubscribe anytime.</p>
-              </form>
-            )}
-          </div>
-        </div>
-      </Section>
-
-      <Section id="faq" title="FAQ" eyebrow="Good to know">
-        <div className="grid md:grid-cols-2 gap-6">
-          {faq.map((f, i) => (
-            <div key={i} className="p-5 rounded-2xl bg-white shadow-sm border border-slate-100">
-              <h3 className="font-semibold">{f.q}</h3>
-              <p className="text-slate-600 mt-2">{f.a}</p>
-            </div>
+      {/* Dedicated grid of your extra photos */}
+      <Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+          {EXTRAS.map((src) => (
+            <img key={src} src={src} className="aspect-[4/3] w-full object-cover rounded-xl border" alt="ToonTail extra" />
           ))}
         </div>
       </Section>
-{/* --- More angles grid --- */}
-<Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
-  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-    {EXTRAS.map((src) => (
-      <img
-        key={src}
-        src={src}
-        className="aspect-[4/3] w-full object-cover rounded-xl border"
-        alt="ToonTail extra"
-      />
-    ))}
-  </div>
-</Section>
-{/* --- More angles grid --- */}
-<Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
-  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-    {EXTRAS.map((src) => (
-      <img
-        key={src}
-        src={src}
-        className="aspect-[4/3] w-full object-cover rounded-xl border"
-        alt="ToonTail extra"
-      />
-    ))}
-  </div>
-</Section>
+
       <Footer />
     </div>
   );
 }
 
-// ---------- UI bits ----------
 function Nav() {
   return (
     <header className="sticky top-0 z-40 backdrop-blur bg-white/60 border-b border-slate-200">
@@ -257,12 +155,9 @@ function Nav() {
           <span className="font-bold tracking-wide">ToonTail</span>
         </div>
         <nav className="hidden md:flex items-center gap-6 text-sm text-slate-700">
-          <a href="#how" className="hover:text-slate-900">How it works</a>
-          <a href="#proto" className="hover:text-slate-900">Prototypes</a>
-          <a href="#estimator" className="hover:text-slate-900">Estimator</a>
           <a href="#gallery" className="hover:text-slate-900">Gallery</a>
-          <a href="#faq" className="hover:text-slate-900">FAQ</a>
-          <a href="#cta" className="px-3 py-2 rounded-xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</a>
+          <a href="#estimator" className="hover:text-slate-900">Estimator</a>
+          <a href="#more-angles" className="hover:text-slate-900">More angles</a>
         </nav>
       </div>
     </header>
@@ -273,34 +168,24 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
   const [which, setWhich] = useState<"before" | "after">("after");
   const src = which === "after" ? MEDIA.videoAfter : MEDIA.videoBefore;
   const poster = which === "after" ? MEDIA.posterAfter : MEDIA.posterBefore;
-
   return (
     <section className="relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" aria-hidden>
-        <div className="absolute -top-32 -right-40 h-96 w-96 rounded-full bg-sky-200 blur-3xl opacity-60" />
-        <div className="absolute -bottom-24 -left-40 h-[28rem] w-[28rem] rounded-full bg-indigo-200 blur-3xl opacity-60" />
-      </div>
       <div className="max-w-7xl mx-auto px-4 py-12 md:py-18 grid md:grid-cols-2 gap-8 items-center">
         <div>
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 text-sky-700 text-xs font-semibold">
             <span>NEW</span>
-            <span>ToonTail v2.0 prototypes now testing</span>
+            <span>ToonTail prototypes now testing</span>
           </div>
           <h1 className="mt-4 text-4xl md:text-6xl font-black leading-tight tracking-tight">
             Turn wake into <span className="bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent">wow</span>.
           </h1>
           <p className="mt-4 text-lg md:text-xl text-slate-700 max-w-xl">
-            A tunable bolt-on jet that turns your tritoon’s prop wash into a clean, crowd-pleasing rooster tail—designed
-            to keep you cruising and smiling.
+            A tunable bolt-on jet that turns your tritoon’s prop wash into a clean, crowd-pleasing rooster tail.
           </p>
           <div className="mt-5 flex items-center gap-3">
             <button onClick={onCtaClick} className="px-5 py-3 rounded-2xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</button>
-            <a href="#how" className="px-5 py-3 rounded-2xl border border-slate-300 font-medium hover:border-slate-400">How it works</a>
+            <a href="#gallery" className="px-5 py-3 rounded-2xl border border-slate-300 font-medium hover:border-slate-400">See results</a>
           </div>
-          <ul className="mt-6 text-sm text-slate-600 space-y-1">
-            <li>• 316 stainless mount • 4→3 in reducer • 30°–45° adjustable angle</li>
-            <li>• Target engines: 250–400 HP outboards • Designed for pontoons/tritoons</li>
-          </ul>
         </div>
         <div className="relative">
           <div className="flex items-center gap-2 mb-2">
@@ -316,21 +201,37 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
             ))}
           </div>
           <div className="rounded-3xl overflow-hidden shadow ring-1 ring-slate-200">
-            <video
-              key={src}
-              src={src}
-              poster={poster}
-              className="w-full h-full object-cover aspect-[4/3]"
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
+            <video key={src} src={src} poster={poster} className="w-full h-full object-cover aspect-[4/3]" autoPlay muted loop playsInline />
           </div>
-          <p className="text-xs text-slate-500 mt-2">Videos must be muted to autoplay on mobile. Place files in <code>/public/media/</code>.</p>
+          <p className="text-xs text-slate-500 mt-2">Videos autoplay muted & loop. Put files in <code>/public/media/</code>.</p>
         </div>
       </div>
     </section>
+  );
+}
+
+function HeroVideo() {
+  const [which, setWhich] = useState<"before" | "after">("after");
+  const src = which === "after" ? MEDIA.videoAfter : MEDIA.videoBefore;
+  const poster = which === "after" ? MEDIA.posterAfter : MEDIA.posterBefore;
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs uppercase tracking-wide text-slate-500">Toggle:</span>
+        {(["before","after"] as const).map((k) => (
+          <button
+            key={k}
+            onClick={() => setWhich(k)}
+            className={`px-3 py-1 rounded-full text-xs font-semibold border ${which===k?"bg-slate-900 text-white border-slate-900":"bg-white text-slate-700 border-slate-300 hover:border-slate-400"}`}
+          >
+            {k.toUpperCase()}
+          </button>
+        ))}
+      </div>
+      <div className="rounded-2xl overflow-hidden border">
+        <video key={src} src={src} poster={poster} className="w-full h-auto" autoPlay muted loop playsInline />
+      </div>
+    </div>
   );
 }
 
@@ -405,7 +306,6 @@ function MiniChart({ height, distance }: { height: number; distance: number }) {
   );
 }
 
-// Before/After photo slider
 function BeforeAfter({ beforeSrc, afterSrc, labelBefore = "Before", labelAfter = "After" }:
 { beforeSrc: string; afterSrc: string; labelBefore?: string; labelAfter?: string; }) {
   const [pos, setPos] = useState(50);
