@@ -1,10 +1,17 @@
 "use client";
 import React, { useMemo, useState } from "react";
 
-// ---- Media files (put these in /public/media/) ----
-// Use .mp4 for smaller, faster video. If yours are .mov, change the two lines below to .mov.
+// ---- Media files (in /public/media/) ----
 const MEDIA = {
-  // Extra gallery images (exact filenames from /public/media)
+  videoBefore: "/media/toontail-before.mp4?v=2",
+  videoAfter:  "/media/toontail-after.mp4?v=2",
+  posterBefore: "/media/toontail-before.jpg",
+  posterAfter:  "/media/toontail-after.jpg",
+  photoBefore: "/media/toontail-photo-before.jpg",
+  photoAfter:  "/media/toontail-photo-after.jpg",
+}; // <-- IMPORTANT: this closes MEDIA
+
+// Extra gallery images (exact filenames)
 const EXTRAS = [
   "/media/Alt1.jpeg",
   "/media/Alt2.jpeg",
