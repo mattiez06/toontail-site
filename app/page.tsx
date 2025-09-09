@@ -2,12 +2,11 @@
 import { useState } from "react";
 
 const MEDIA = {
-  before: "/media/toontail-before.mov",
-  after:  "/media/toontail-after.mov",
+  before: "/media/toontail-before.mp4",
+  after:  "/media/toontail-after.mp4",
   posterBefore: "/media/toontail-before.jpg",
   posterAfter:  "/media/toontail-after.jpg",
 };
-
 export default function Page() {
   const [which, setWhich] = useState<"after" | "before">("after");
   const src = which === "after" ? MEDIA.after : MEDIA.before;
