@@ -4,6 +4,16 @@ import React, { useMemo, useState } from "react";
 // ---- Media files (put these in /public/media/) ----
 // Use .mp4 for smaller, faster video. If yours are .mov, change the two lines below to .mov.
 const MEDIA = {
+  // Extra gallery images (exact filenames from /public/media)
+const EXTRAS = [
+  "/media/Alt1.jpeg",
+  "/media/Alt2.jpeg",
+  "/media/Alt3.jpeg",
+  "/media/Device_Closeup.jpeg",
+  "/media/With_ToonTail.jpeg",
+  "/media/Without_ToonTail.jpeg",
+  "/media/ToonTail_Logo.jpeg",
+];
   videoBefore: "/media/toontail-before.mp4",
   videoAfter:  "/media/toontail-after.mp4",
   posterBefore: "/media/toontail-before.jpg",
