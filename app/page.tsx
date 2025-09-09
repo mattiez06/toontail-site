@@ -72,9 +72,8 @@ function ToonTailLanding() {
 
       <Section id="how" title="What is ToonTail?" eyebrow="Turn wake into wow">
         <p className="text-lg md:text-xl max-w-3xl">
-          ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures prop wash and
-          redirects it through a tuned outlet to create a clean, dramatic rooster tail—without sacrificing your day on
-          the water.
+          ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount of thrust from the prop and
+          redirects it through a tuned, effecient outlet to create a clean, dramatic rooster tail—without sacrificing performance. Got Tail ? Get Toon Tail!
         </p>
       </Section>
 
@@ -189,7 +188,7 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
             Turn wake into <span className="bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent">wow</span>.
           </h1>
           <p className="mt-4 text-lg md:text-xl text-slate-700 max-w-xl">
-            A tunable bolt-on jet that turns your tritoon’s prop wash into a clean, crowd-pleasing rooster tail.
+            A tunable bolt-on jet that turns your tritoon’s wake into a clean, crowd-pleasing rooster tail.
           </p>
           <div className="mt-5 flex items-center gap-3">
             <button onClick={onCtaClick} className="px-5 py-3 rounded-2xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</button>
@@ -388,10 +387,11 @@ function Logo({ className = "" }: { className?: string }) {
 }
 
 const faq = [
-  { q: "Will ToonTail affect performance or engine cooling?", a: "Designed to leverage existing prop wash; we target minimal speed impact in cruise. Always monitor engine temps and follow manufacturer guidelines." },
-  { q: "What engines/boats are supported?", a: "Prototypes focus on 250–400 HP outboards on pontoons/tritoons. Other setups are in exploration." },
-  { q: "How is it installed?", a: "A reinforced 316 stainless bracket clamps to the anti-ventilation plate/engine bracket. We’ll publish torque specs and step-by-step." },
-  { q: "Can I tune the tail height and cleanliness?", a: "Yes: adjust angle (30°–45°), standoff, and outlet shape; optional gill/interceptor can boost head pressure for taller tails." },
-  { q: "Is it legal everywhere?", a: "Rules vary by jurisdiction. Always verify local regulations and operate with courtesy." },
-  { q: "When can I buy one?", a: "Join the waitlist—Founder’s run timing will be announced after A/B testing wraps and we lock production tooling." },
+{ q: "Will ToonTail affect performance or engine cooling?", a: "Designed to leverage existing thrust aft of the prop while maintaining cooling; we target minimal speed impact at cruise. Always monitor engine temps and follow manufacturer guidelines." },
+{ q: "What engines/boats are supported?", a: "ToonTail currently works with Mercury 250–400 HP outboards on pontoons and tritoons. Additional tails are in development for high-HP Yamaha motors and 90–150 HP Mercury motors." },
+{ q: "How is it installed?", a: "A reinforced, removable 316 stainless bracket clamps to the anti-ventilation plate or engine bracket. See installation instructions for torque specs and step-by-step." },
+{ q: "Can I tune the tail height and cleanliness?", a: "Yes: slight trim adjustments can significantly change the angle, giving you control over height and distance; an optional gill/interceptor (coming soon) can boost head pressure for taller tails." },
+{ q: "Is it legal everywhere?", a: "Rules vary by jurisdiction. Always verify local regulations and operate with courtesy." },
+{ q: "Where can I buy one?", a: "Join the waitlist to get in line for the Founder’s run. Available at toontail.com or at a boat show near you." }
+ },
 ];
