@@ -151,7 +151,16 @@ function Nav() {
     <header className="sticky top-0 z-40 backdrop-blur bg-white/60 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Logo className="h-8 w-8" />
+          function Logo({ className = "" }: { className?: string }) {
+  return (
+    <img
+      src="/media/ToonTail_Logo.jpeg?v=4"
+      alt="ToonTail"
+      className={`${className} w-auto`}
+    />
+  );
+}
+
           <span className="font-bold tracking-wide">ToonTail</span>
         </div>
         <nav className="hidden md:flex items-center gap-6 text-sm text-slate-700">
