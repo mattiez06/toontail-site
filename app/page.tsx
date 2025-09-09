@@ -229,7 +229,19 @@ function ToonTailLanding() {
     ))}
   </div>
 </Section>
-
+{/* --- More angles grid --- */}
+<Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
+  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+    {EXTRAS.map((src) => (
+      <img
+        key={src}
+        src={src}
+        className="aspect-[4/3] w-full object-cover rounded-xl border"
+        alt="ToonTail extra"
+      />
+    ))}
+  </div>
+</Section>
       <Footer />
     </div>
   );
