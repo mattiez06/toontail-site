@@ -97,45 +97,56 @@ const estimation = useMemo(() => {
         </p>
       </Section>
 
-      <Section id="estimator" title="Tail estimator (beta)" eyebrow="Back-of-napkin physics">
-        <div className="grid md:grid-cols-2 gap-6 items-start">
-          <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-            <form className="grid grid-cols-2 gap-4" id="waitlist" onSubmit={onSubmit}>
-              <LabeledInput label="Boat speed (mph)" type="number" value={estimator.speedMph} onChange={(v: string) => setEstimator((s) => ({ ...s, speedMph: Number(v) }))} />
-              <LabeledInput label="Pipe angle (°)" type="number" value={estimator.pipeAngle} onChange={(v: string) => setEstimator((s) => ({ ...s, pipeAngle: Number(v) }))} />
-              <LabeledInput label="Motor trim (°)" type="number" value={estimator.trimDeg} onChange={(v: string) => setEstimator((s) => ({ ...s, trimDeg: Number(v) }))} />
-              <div className="col-span-2">
-                <label className="block text-sm font-medium text-slate-700 mb-1">Reducer (from → to)</label>
-                <div className="flex items-center gap-3">
-                  <select className="px-3 py-2 rounded-xl border w-28" value={estimator.reducerFrom} onChange={(e) => setEstimator((s) => ({ ...s, reducerFrom: Number(e.target.value) }))}>
-                    {[4, 5].map((n) => <option key={n} value={n}>{n}"</option>)}
-                  </select>
-                  <span className="text-xl">→</span>
-                  <select className="px-3 py-2 rounded-xl border w-28" value={estimator.reducerTo} onChange={(e) => setEstimator((s) => ({ ...s, reducerTo: Number(e.target.value) }))}>
-                    {[3, 2.5].map((n) => <option key={n} value={n}>{n}"</option>)}
-                  </select>
-                </div>
-              </div>
-              <label className="col-span-2 inline-flex items-center gap-3 text-sm text-slate-700">
-                <input type="checkbox" checked={estimator.intakeAssist} onChange={(e) => setEstimator((s) => ({ ...s, intakeAssist: e.target.checked }))} />
-                Add gill/interceptor assist
-              </label>
-              <button className="col-span-2 mt-1 px-4 py-2 rounded-xl bg-sky-600 text-white">Join waitlist</button>
-            </form>
-            <p className="text-xs text-slate-500 mt-3">*Estimator is indicative only and not a guarantee of actual performance.</p>
-          </div>
-          <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-            <div className="grid gap-3">
-              <Metric label="Estimated tail height" value={`${estimation.heightFt} ft`} />
-              <Metric label="Estimated tail distance" value={`${estimation.distanceFt} ft`} />
-              <Metric label="Cleanliness (1–5)" value={`${estimation.cleanliness}`} />
-            </div>
-            <div className="mt-6">
-              <MiniChart height={estimation.heightFt} distance={estimation.distanceFt} />
-            </div>
-          </div>
-        </div>
-      </Section>
+    <Section id="estimator" title="Tail estimator (beta)" eyebrow="Dial it in">
+  <div className="grid md:grid-cols-2 gap-6 items-start">
+    {/* Controls */}
+    <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+      <SliderRow
+        label="Boat speed"
+        unit="mph"
+        min={10}
+        max={60}
+        step={1}
+        value={estimator.speedMph}
+        onChange={(v) => setEstimator((s:any) => ({ ...s, speedMph: v }))}
+      />
+      <SliderRow
+        label="Horsepower"
+        unit="hp"
+        min={90}
+        max={450}
+        step={10}
+        value={estimator.horsepower}
+        onChange={(v) => setEstimator((s:any) => ({ ...s, horsepower: v }))}
+      />
+      <SliderRow
+        label="Motor trim"
+        unit="°"
+        min={0}
+        max={15}
+        step={1}
+        value={estimator.trimDeg}
+        onChange={(v) => setEstimator((s:any) => ({ ...s, trimDeg: v }))}
+      />
+
+      <p className="text-xs text-slate-500 mt-3">
+        Calibrated so 30 mph / 350 hp / 10° → ~35 ft height, ~110 ft distance.
+        Actual results vary with prop, hull, load, and water.
+      </p>
+    </div>
+
+    {/* Readout */}
+    <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+      <div className="grid gap-3">
+        <Metric label="Estimated tail height" value={`${estimation.heightFt} ft`} />
+        <Metric label="Estimated tail distance" value={`${estimation.distanceFt} ft`} />
+      </div>
+      <div className="mt-6">
+        <MiniChart height={estimation.heightFt} distance={estimation.distanceFt} />
+      </div>
+    </div>
+  </div>
+</Section>
 
       <Section id="gallery" title="Prototype gallery" eyebrow="In the wild (test shots)">
         <div className="grid lg:grid-cols-2 gap-6">
