@@ -153,7 +153,7 @@ const estimation = useMemo(() => {
           <Card>
             <h3 className="text-lg font-semibold">Photo — Before / After</h3>
             <p className="text-slate-600 text-sm mb-3">Drag the slider to compare.</p>
-            <BeforeAfter beforeSrc={MEDIA.photoBefore} afterSrc={MEDIA.photoAfter} />
+            <BeforeAfter beforeSrc={MEDIA.toontail-photo-before.jpg} afterSrc={MEDIA.toontail-photo-after.jpg} />
           </Card>
           <Card>
             <h3 className="text-lg font-semibold">Hero video</h3>
