@@ -468,6 +468,31 @@ function BeforeAfter({
     </div>
   );
 }
+// ...other helper components above...
+function MiniChart(...) { ... }
+
+function BeforeAfter(...) { ... }
+
+// ✅ PASTE Watermark HERE (top-level, before Footer)
+function Watermark() {
+  return (
+    <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center">
+      <img
+        src="/media/ToonTail_Logo.jpeg?v=8"
+        alt=""
+        className="w-[90vw] max-w-[900px] opacity-5 blur-[0.5px] select-none"
+      />
+    </div>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="mt-10 border-t">
+      ...
+    </footer>
+  );
+}
 
 function Footer() {
   return (
