@@ -181,7 +181,19 @@ function ToonTailLanding() {
           ))}
         </div>
       </Section>
-
+<Section id="faq" title="Frequently asked questions" eyebrow="Quick answers">
+  <div className="mx-auto max-w-3xl">
+    {faq.map((item, i) => (
+      <details key={i} className="group border-b py-4">
+        <summary className="flex cursor-pointer list-none items-start justify-between">
+          <span className="font-medium text-slate-900">{item.q}</span>
+          <span className="ml-4 select-none text-slate-400 transition group-open:rotate-45">+</span>
+        </summary>
+        <p className="mt-2 text-slate-700">{item.a}</p>
+      </details>
+    ))}
+  </div>
+</Section>
       <Footer />
     </div>
   );
