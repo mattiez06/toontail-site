@@ -245,6 +245,7 @@ function HeroVideo() {
   const [which, setWhich] = useState<"before" | "after">("after");
   const src = which === "after" ? MEDIA.videoAfter : MEDIA.videoBefore;
   const poster = which === "after" ? MEDIA.posterAfter : MEDIA.posterBefore;
+
   return (
     <div>
       <div className="flex items-center gap-2 mb-2">
@@ -253,26 +254,31 @@ function HeroVideo() {
           <button
             key={k}
             onClick={() => setWhich(k)}
-            className={`px-3 py-1 rounded-full text-xs font-semibold border ${which===k?"bg-slate-900 text-white border-slate-900":"bg-white text-slate-700 border-slate-300 hover:border-slate-400"}`}
+            className={`px-3 py-1 rounded-full text-xs font-semibold border ${which===k ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 border-slate-300 hover:border-slate-400"}`}
           >
             {k.toUpperCase()}
           </button>
         ))}
       </div>
-  <div className="relative aspect-[16/9] w-full bg-black">
-    <video
-      key={src}
-      src={src}
-      poster={poster}
-      className="absolute inset-0 h-full w-full object-contain"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-    />
-  </div>
-</div>
+
+      <div className="rounded-2xl overflow-hidden border">
+        <div className="relative aspect-[16/9] w-full bg-black">
+          <video
+            key={src}
+            poster={poster}
+            className="absolute inset-0 h-full w-full object-contain"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+          >
+            <source src={src.replace(".mov",".mp4")} type="video/mp4" />
+            <source src={src.replace(".mp4",".mov")} type="video/quicktime" />
+          </video>
+        </div>
+      </div>
+    </div>
   );
 }
 
