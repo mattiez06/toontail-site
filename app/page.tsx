@@ -59,16 +59,154 @@ export default function Page() {
 }
 
 function ToonTailLanding() {
-  // ...state & math...
+  // ---- Estimator inputs (only these three) ----
+  const [estimator, setEstimator] = useState({
+    speedMph: 30,   // boat speed
+    horsepower: 350,
+    trimDeg: 10,
+  });
+
+  // ---- Calibrated math: 30 mph, 350 hp, 10° → ~35 ft height, ~110 ft distance ----
+  const estimation = useMemo(() => {
+    const v    = Math.max(5, estimator.speedMph);
+    const hp   = Math.max(50, estimator.horsepower);
+    const trim = Math.max(0, Math.min(20, estimator.trimDeg)); // clamp 0–20°
+
+    const H_BASE = 35;   // feet
+    const D_BASE = 110;  // feet
+
+    // Exponents & trim sensitivities (tunable)
+    const ALPHA_H = 0.7;    // speed → height
+    const BETA_H  = 0.25;   // hp    → height
+    const TRIM_H  = 0.04;   // +4% height per +1° from 10°
+
+    const ALPHA_D = 1.0;    // speed → distance
+    const BETA_D  = 0.20;   // hp    → distance
+    const TRIM_D  = -0.015; // −1.5% distance per +1° from 10°
+
+    const hTrim = Math.max(0.2, 1 + TRIM_H * (trim - 10));
+    const dTrim = Math.max(0.2, 1 + TRIM_D * (trim - 10));
+
+    const height = H_BASE * Math.pow(v / 30, ALPHA_H) * Math.pow(hp / 350, BETA_H) * hTrim;
+    const dist   = D_BASE * Math.pow(v / 30, ALPHA_D) * Math.pow(hp / 350, BETA_D) * dTrim;
+
+    const heightFt   = Math.round(Math.min(60, Math.max(0, height)));
+    const distanceFt = Math.round(Math.min(300, Math.max(1, dist)));
+
+    return { heightFt, distanceFt };
+  }, [estimator]);  // ← this line should end the useMemo call
+
+  // ↓↓↓ This is the ONLY 'return' for this component ↓↓↓
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-white text-slate-900">
-      <Nav />
-      <Hero onCtaClick={() => document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" })} />
-      {/* other sections */}
-      <Footer />
+    <div className="relative min-h-screen bg-gradient-to-b from-sky-50 via-white to-white text-slate-900">
+      {/* background watermark */}
+      <Watermark />
+
+      {/* content above watermark */}
+      <div className="relative z-10">
+        <Nav />
+        <Hero onCtaClick={() => document.getElementById("estimator")?.scrollIntoView({ behavior: "smooth" })} />
+
+        <Section id="how" title="What is ToonTail?" eyebrow="Turn wake into wow">
+          <p className="text-lg md:text-xl max-w-3xl">
+            ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount of thrust from the prop and
+            redirects it through a tuned, efficient outlet to create a clean, dramatic rooster tail—without sacrificing performance.
+          </p>
+        </Section>
+
+        <Section id="estimator" title="Tail estimator (beta)" eyebrow="Dial it in">
+          <div className="grid md:grid-cols-2 gap-6 items-start">
+            {/* Controls */}
+            <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+              <SliderRow
+                label="Boat speed"
+                unit="mph"
+                min={10}
+                max={60}
+                step={1}
+                value={estimator.speedMph}
+                onChange={(v) => setEstimator((s:any) => ({ ...s, speedMph: v }))}
+              />
+              <SliderRow
+                label="Horsepower"
+                unit="hp"
+                min={90}
+                max={450}
+                step={10}
+                value={estimator.horsepower}
+                onChange={(v) => setEstimator((s:any) => ({ ...s, horsepower: v }))}
+              />
+              <SliderRow
+                label="Motor trim"
+                unit="°"
+                min={0}
+                max={15}
+                step={1}
+                value={estimator.trimDeg}
+                onChange={(v) => setEstimator((s:any) => ({ ...s, trimDeg: v }))}
+              />
+
+              <p className="text-xs text-slate-500 mt-3">
+                Calibrated so 30 mph / 350 hp / 10° → ~35 ft height, ~110 ft distance. Actual results vary with prop, hull, load, and water.
+              </p>
+            </div>
+
+            {/* Readout */}
+            <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+              <div className="grid gap-3">
+                <Metric label="Estimated tail height" value={`${estimation.heightFt} ft`} />
+                <Metric label="Estimated tail distance" value={`${estimation.distanceFt} ft`} />
+              </div>
+              <div className="mt-6">
+                <MiniChart height={estimation.heightFt} distance={estimation.distanceFt} />
+              </div>
+            </div>
+          </div>
+        </Section>
+
+        <Section id="gallery" title="Before and After Slider">
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Card>
+              <h3 className="text-lg font-semibold">Photo — Before / After</h3>
+              <p className="text-slate-600 text-sm mb-3">Drag the slider to compare.</p>
+              <BeforeAfter beforeSrc={MEDIA.photoBefore} afterSrc={MEDIA.photoAfter} />
+            </Card>
+            <Card>
+              <h3 className="text-lg font-semibold">Hero video</h3>
+              <HeroVideo />
+            </Card>
+          </div>
+        </Section>
+
+        <Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {EXTRAS.map((src) => (
+              <img key={src} src={src} className="aspect-[4/3] w-full object-cover rounded-xl border" alt="ToonTail extra" />
+            ))}
+          </div>
+        </Section>
+
+        {/* If you added the FAQ earlier, keep it here */}
+        <Section id="faq" title="Frequently asked questions" eyebrow="Quick answers">
+          <div className="mx-auto max-w-3xl">
+            {faq.map((item, i) => (
+              <details key={i} className="group border-b py-4">
+                <summary className="flex cursor-pointer list-none items-start justify-between">
+                  <span className="font-medium text-slate-900">{item.q}</span>
+                  <span className="ml-4 select-none text-slate-400 transition group-open:rotate-45">+</span>
+                </summary>
+                <p className="mt-2 text-slate-700">{item.a}</p>
+              </details>
+            ))}
+          </div>
+        </Section>
+
+        <Footer />
+      </div>
     </div>
   );
 }
+
 
   // ---- Estimator inputs (only these three) ----
   const [estimator, setEstimator] = useState({
