@@ -285,33 +285,74 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function MiniChart({ height, distance }: { height: number; distance: number }) {
-  const h = Math.max(0, height);
-  const d = Math.max(1, distance);
-  const w = 320;
-  const ht = 160;
-  const xMax = Math.max(50, d);
-  const yMax = Math.max(20, h);
-  const scaleX = w / xMax;
-  const scaleY = ht / (yMax * 1.1);
-  const endX = d * scaleX;
-  const endY = ht - h * scaleY;
-  const path = `M 20 ${ht - 10} Q ${endX / 2} ${endY - 40}, ${endX} ${endY}`;
+  // Fixed axis ranges so extremes are obvious (tweak if you like)
+  const H_MIN = 0,   H_MAX = 60;   // feet (matches your clamp)
+  const D_MIN = 0,   D_MAX = 300;  // feet (matches your clamp)
+
+  // Canvas
+  const w = 340;
+  const h = 160;
+  const pad = 20;
+
+  // Clamp inputs and map to fixed coordinates
+  const hClamped = Math.max(H_MIN, Math.min(H_MAX, height));
+  const dClamped = Math.max(D_MIN, Math.min(D_MAX, distance));
+
+  const x = pad + ((dClamped - D_MIN) / (D_MAX - D_MIN)) * (w - pad * 2);
+  const y = (h - pad) - ((hClamped - H_MIN) / (H_MAX - H_MIN)) * (h - pad * 2);
+
+  const x0 = pad, y0 = h - pad; // origin (left/bottom)
+  const cx = x0 + (x - x0) / 2; // control point x
+  const cy = y - 40 * (hClamped / (H_MAX || 1)) + 20; // bend more when taller
+
+  const strokeW = 4 + 4 * (hClamped / (H_MAX || 1)); // thicker when taller
+  const path = `M ${x0} ${y0} Q ${cx} ${cy}, ${x} ${y}`;
+
+  // Flags to hint at extremes
+  const nearLow  = hClamped <= H_MIN + 5 || dClamped <= D_MIN + 15;
+  const nearHigh = hClamped >= H_MAX - 5 || dClamped >= D_MAX - 15;
+
   return (
-    <svg viewBox={`0 0 ${w} ${ht}`} className="w-full h-40">
+    <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
+      {/* background */}
+      <rect x="0" y="0" width={w} height={h} fill="#f8fafc" />
+      {/* grid */}
+      <g stroke="#e2e8f0" strokeWidth="1">
+        {Array.from({ length: 5 }).map((_, i) => {
+          const yy = pad + (i * (h - pad * 2)) / 4;
+          return <line key={i} x1={pad} y1={yy} x2={w - pad} y2={yy} />;
+        })}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const xx = pad + (i * (w - pad * 2)) / 5;
+          return <line key={`v${i}`} x1={xx} y1={pad} x2={xx} y2={h - pad} />;
+        })}
+      </g>
+
+      {/* axes labels */}
+      <text x={pad} y={h - 4} fontSize="10" fill="#475569">0 ft</text>
+      <text x={w - pad - 28} y={h - 4} fontSize="10" fill="#475569">{D_MAX} ft</text>
+      <text x={2} y={pad + 10} fontSize="10" fill="#475569">{H_MAX} ft</text>
+
+      {/* tail arc */}
       <defs>
         <linearGradient id="jet" x1="0" x2="1" y1="0" y2="1">
           <stop offset="0%" stopColor="#0ea5e9" />
           <stop offset="100%" stopColor="#6366f1" />
         </linearGradient>
       </defs>
-      <rect x="0" y="0" width={w} height={ht} fill="#f8fafc" />
-      <rect x="0" y={ht - 12} width={w} height={12} fill="#94a3b8" opacity="0.3" />
-      <path d={path} stroke="url(#jet)" strokeWidth="6" fill="none" />
-      <circle cx={endX} cy={endY} r="4" fill="#0ea5e9" />
-      <text x="10" y="16" fontSize="10" fill="#334155">Tail arc (illustrative)</text>
+      <path d={path} stroke="url(#jet)" strokeWidth={strokeW} fill="none" />
+
+      {/* end marker */}
+      <circle cx={x} cy={y} r="4" fill="#0ea5e9" />
+
+      {/* captions */}
+      <text x="10" y="14" fontSize="10" fill="#334155">Tail arc (illustrative)</text>
+      {nearLow  && <text x={pad} y={pad + 12} fontSize="10" fill="#64748b">low end</text>}
+      {nearHigh && <text x={w - pad - 44} y={pad + 12} fontSize="10" fill="#64748b">high end</text>}
     </svg>
   );
 }
+
 
 function BeforeAfter({
   beforeSrc,
