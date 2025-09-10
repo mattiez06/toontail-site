@@ -1,17 +1,17 @@
 "use client";
 import React, { useMemo, useState } from "react";
 
-// ---- Media files in /public/media (names must match exactly; ?v=3 busts cache) ----
+// ---- Media files in /public/media (names must match exactly; ?v=5 busts cache) ----
 const MEDIA = {
-  videoBefore: "/media/toontail-before.mp4?v=3",
-  videoAfter:  "/media/toontail-after.mp4?v=3",
-  posterBefore: "/media/toontail-before.jpg?v=3",
-  posterAfter:  "/media/toontail-after.jpg?v=3",
-  photoBefore: "/media/toontail-photo-before.jpg?v=3",
-  photoAfter:  "/media/toontail-photo-after.jpg?v=3",
+  videoBefore: "/media/toontail-before.mp4?v=5",
+  videoAfter:  "/media/toontail-after.mp4?v=5",
+  posterBefore: "/media/toontail-before.jpg?v=5",
+  posterAfter:  "/media/toontail-after.jpg?v=5",
+  photoBefore: "/media/Without_ToonTail.jpeg?v=5",
+  photoAfter:  "/media/With_ToonTail.jpeg?v=5",
 };
 
-// Extra gallery images (exact filenames from /public/media)
+// Optional extra images grid
 const EXTRAS = [
   "/media/Alt1.jpeg",
   "/media/Alt2.jpeg",
@@ -27,133 +27,113 @@ export default function Page() {
 }
 
 function ToonTailLanding() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  // ---- Estimator inputs (only these three) ----
   const [estimator, setEstimator] = useState({
-    speedMph: 35,
-    pipeAngle: 30,
-    reducerFrom: 4,
-    reducerTo: 3,
-    trimDeg: 2,
-    intakeAssist: false,
+    speedMph: 30,   // boat speed
+    horsepower: 350,
+    trimDeg: 10,
   });
 
-  // ---- Estimator inputs (only these three) ----
-const [estimator, setEstimator] = useState({
-  speedMph: 30,   // boat speed
-  horsepower: 350,
-  trimDeg: 10,
-});
+  // ---- Calibrated math: 30 mph, 350 hp, 10° → ~35 ft height, ~110 ft distance ----
+  const estimation = useMemo(() => {
+    const v   = Math.max(5, estimator.speedMph);
+    const hp  = Math.max(50, estimator.horsepower);
+    const trim = Math.max(0, Math.min(20, estimator.trimDeg)); // clamp 0–20°
 
-// ---- Calibrated math: 30 mph, 350 hp, 10° → 35 ft height, 110 ft distance ----
-const estimation = useMemo(() => {
-  const v   = Math.max(5, estimator.speedMph);
-  const hp  = Math.max(50, estimator.horsepower);
-  const trim = Math.max(0, Math.min(20, estimator.trimDeg)); // clamp 0–20°
+    const H_BASE = 35;   // feet
+    const D_BASE = 110;  // feet
 
-  // Baseline targets at (30 mph, 350 hp, 10°)
-  const H_BASE = 35;   // feet
-  const D_BASE = 110;  // feet
+    // Exponents & trim sensitivities (tunable)
+    const ALPHA_H = 0.7;    // speed → height
+    const BETA_H  = 0.25;   // hp    → height
+    const TRIM_H  = 0.04;   // +4% height per +1° from 10°
 
-  // Exponents & trim sensitivities (tunable)
-  const ALPHA_H = 0.7;   // speed → height
-  const BETA_H  = 0.25;  // hp    → height
-  const TRIM_H  = 0.04;  // +4% height per +1° from 10°
+    const ALPHA_D = 1.0;    // speed → distance
+    const BETA_D  = 0.20;   // hp    → distance
+    const TRIM_D  = -0.015; // −1.5% distance per +1° from 10°
 
-  const ALPHA_D = 1.0;   // speed → distance
-  const BETA_D  = 0.20;  // hp    → distance
-  const TRIM_D  = -0.015; // −1.5% distance per +1° from 10°
+    // Trim multipliers
+    const hTrim = Math.max(0.2, 1 + TRIM_H * (trim - 10));
+    const dTrim = Math.max(0.2, 1 + TRIM_D * (trim - 10));
 
-  // Trim multipliers (keep sane)
-  const hTrim = Math.max(0.2, 1 + TRIM_H * (trim - 10));
-  const dTrim = Math.max(0.2, 1 + TRIM_D * (trim - 10));
+    // Scale relative to the calibration point
+    const height = H_BASE * Math.pow(v / 30, ALPHA_H) * Math.pow(hp / 350, BETA_H) * hTrim;
+    const dist   = D_BASE * Math.pow(v / 30, ALPHA_D) * Math.pow(hp / 350, BETA_D) * dTrim;
 
-  // Scale relative to the calibration point
-  const height = H_BASE * Math.pow(v / 30, ALPHA_H) * Math.pow(hp / 350, BETA_H) * hTrim;
-  const dist   = D_BASE * Math.pow(v / 30, ALPHA_D) * Math.pow(hp / 350, BETA_D) * dTrim;
+    const heightFt   = Math.round(Math.min(60, Math.max(0, height)));
+    const distanceFt = Math.round(Math.min(300, Math.max(1, dist)));
 
-  // Optional soft caps (keep outputs realistic)
-  const heightFt   = Math.round(Math.min(60, Math.max(0, height)));
-  const distanceFt = Math.round(Math.min(300, Math.max(1, dist)));
-
-  return { heightFt, distanceFt };
-}, [estimator]);
-
-
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setSubmitted(true);
-  }
+    return { heightFt, distanceFt };
+  }, [estimator]);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-white text-slate-900">
       <Nav />
-      <Hero onCtaClick={() => document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" })} />
+      <Hero onCtaClick={() => document.getElementById("estimator")?.scrollIntoView({ behavior: "smooth" })} />
 
       <Section id="how" title="What is ToonTail?" eyebrow="Turn wake into wow">
         <p className="text-lg md:text-xl max-w-3xl">
           ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount of thrust from the prop and
-          redirects it through a tuned, effecient outlet to create a clean, dramatic rooster tail—without sacrificing performance. Got Tail ? Get Toon Tail!
+          redirects it through a tuned, efficient outlet to create a clean, dramatic rooster tail—without sacrificing performance.
         </p>
       </Section>
 
-    <Section id="estimator" title="Tail estimator (beta)" eyebrow="Dial it in">
-  <div className="grid md:grid-cols-2 gap-6 items-start">
-    {/* Controls */}
-    <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-      <SliderRow
-        label="Boat speed"
-        unit="mph"
-        min={10}
-        max={60}
-        step={1}
-        value={estimator.speedMph}
-        onChange={(v) => setEstimator((s:any) => ({ ...s, speedMph: v }))}
-      />
-      <SliderRow
-        label="Horsepower"
-        unit="hp"
-        min={90}
-        max={450}
-        step={10}
-        value={estimator.horsepower}
-        onChange={(v) => setEstimator((s:any) => ({ ...s, horsepower: v }))}
-      />
-      <SliderRow
-        label="Motor trim"
-        unit="°"
-        min={0}
-        max={15}
-        step={1}
-        value={estimator.trimDeg}
-        onChange={(v) => setEstimator((s:any) => ({ ...s, trimDeg: v }))}
-      />
+      <Section id="estimator" title="Tail estimator (beta)" eyebrow="Dial it in">
+        <div className="grid md:grid-cols-2 gap-6 items-start">
+          {/* Controls */}
+          <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+            <SliderRow
+              label="Boat speed"
+              unit="mph"
+              min={10}
+              max={60}
+              step={1}
+              value={estimator.speedMph}
+              onChange={(v) => setEstimator((s: any) => ({ ...s, speedMph: v }))}
+            />
+            <SliderRow
+              label="Horsepower"
+              unit="hp"
+              min={90}
+              max={450}
+              step={10}
+              value={estimator.horsepower}
+              onChange={(v) => setEstimator((s: any) => ({ ...s, horsepower: v }))}
+            />
+            <SliderRow
+              label="Motor trim"
+              unit="°"
+              min={0}
+              max={15}
+              step={1}
+              value={estimator.trimDeg}
+              onChange={(v) => setEstimator((s: any) => ({ ...s, trimDeg: v }))}
+            />
 
-      <p className="text-xs text-slate-500 mt-3">
-        Calibrated so 30 mph / 350 hp / 10° → ~35 ft height, ~110 ft distance.
-        Actual results vary with prop, hull, load, and water.
-      </p>
-    </div>
+            <p className="text-xs text-slate-500 mt-3">
+              Calibrated so 30 mph / 350 hp / 10° → ~35 ft height, ~110 ft distance. Actual results vary with prop, hull, load, and water.
+            </p>
+          </div>
 
-    {/* Readout */}
-    <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-      <div className="grid gap-3">
-        <Metric label="Estimated tail height" value={`${estimation.heightFt} ft`} />
-        <Metric label="Estimated tail distance" value={`${estimation.distanceFt} ft`} />
-      </div>
-      <div className="mt-6">
-        <MiniChart height={estimation.heightFt} distance={estimation.distanceFt} />
-      </div>
-    </div>
-  </div>
-</Section>
+          {/* Readout */}
+          <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
+            <div className="grid gap-3">
+              <Metric label="Estimated tail height" value={`${estimation.heightFt} ft`} />
+              <Metric label="Estimated tail distance" value={`${estimation.distanceFt} ft`} />
+            </div>
+            <div className="mt-6">
+              <MiniChart height={estimation.heightFt} distance={estimation.distanceFt} />
+            </div>
+          </div>
+        </div>
+      </Section>
 
       <Section id="gallery" title="Before and After Slider">
         <div className="grid lg:grid-cols-2 gap-6">
           <Card>
             <h3 className="text-lg font-semibold">Photo — Before / After</h3>
             <p className="text-slate-600 text-sm mb-3">Drag the slider to compare.</p>
-            <BeforeAfter beforeSrc={MEDIA.toontail-photo-before.jpg} afterSrc={MEDIA.toontail-photo-after.jpg} />
+            <BeforeAfter beforeSrc={MEDIA.photoBefore} afterSrc={MEDIA.photoAfter} />
           </Card>
           <Card>
             <h3 className="text-lg font-semibold">Hero video</h3>
@@ -162,7 +142,6 @@ const estimation = useMemo(() => {
         </div>
       </Section>
 
-      {/* Dedicated grid of your extra photos */}
       <Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
           {EXTRAS.map((src) => (
@@ -175,6 +154,7 @@ const estimation = useMemo(() => {
     </div>
   );
 }
+
 // --- Brand logo component (top-level, not inside any other function) ---
 function Logo({ className = "" }: { className?: string }) {
   return (
@@ -197,19 +177,9 @@ function Nav() {
         <nav className="hidden md:flex items-center gap-6 text-sm text-slate-700">
           <a href="#estimator" className="hover:text-slate-900">Estimator</a>
           <a href="#more-angles" className="hover:text-slate-900">More angles</a>
-          <a href="#cta" className="px-3 py-2 rounded-xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</a>
-        </nav>
-      </div>
-    </header>
-  );
-}
-
-          <span className="font-bold tracking-wide">ToonTail</span>
-        </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm text-slate-700">
-          <a href="#gallery" className="hover:text-slate-900">Gallery</a>
-          <a href="#estimator" className="hover:text-slate-900">Estimator</a>
-          <a href="#more-angles" className="hover:text-slate-900">More angles</a>
+          <a href="#estimator" className="px-3 py-2 rounded-xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">
+            Join waitlist
+          </a>
         </nav>
       </div>
     </header>
@@ -301,23 +271,8 @@ function Section({ id, eyebrow, title, children }: any) {
   );
 }
 
-function Card({ children }: any) { return <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">{children}</div>; }
-function Badge({ children }: any) { return <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-900 text-white mb-3">{children}</span>; }
-
-function LabeledInput({ label, type = "text", value, onChange, placeholder, required = false }: any) {
-  return (
-    <label className="block">
-      <span className="block text-sm font-medium text-slate-700 mb-1">{label}</span>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange?.(e.target.value)}
-        placeholder={placeholder}
-        required={required}
-        className="w-full px-3 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400"
-      />
-    </label>
-  );
+function Card({ children }: any) {
+  return <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">{children}</div>;
 }
 
 function Metric({ label, value }: { label: string; value: string }) {
@@ -358,8 +313,17 @@ function MiniChart({ height, distance }: { height: number; distance: number }) {
   );
 }
 
-function BeforeAfter({ beforeSrc, afterSrc, labelBefore = "Before", labelAfter = "After" }:
-{ beforeSrc: string; afterSrc: string; labelBefore?: string; labelAfter?: string; }) {
+function BeforeAfter({
+  beforeSrc,
+  afterSrc,
+  labelBefore = "Before",
+  labelAfter = "After",
+}: {
+  beforeSrc: string;
+  afterSrc: string;
+  labelBefore?: string;
+  labelAfter?: string;
+}) {
   const [pos, setPos] = useState(50);
   return (
     <div className="rounded-2xl overflow-hidden relative select-none">
@@ -411,31 +375,31 @@ function Footer() {
   );
 }
 
-function Logo({ className = "" }: { className?: string }) {
+// ---- UI helpers ----
+function SliderRow({
+  label, unit, value, onChange, min, max, step = 1,
+}: {
+  label: string; unit: string; value: number;
+  onChange: (v: number) => void; min: number; max: number; step?: number;
+}) {
   return (
-    <svg viewBox="0 0 120 120" className={className} xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#0ea5e9" />
-          <stop offset="100%" stopColor="#6366f1" />
-        </linearGradient>
-      </defs>
-      <rect x="0" y="0" width="120" height="120" rx="24" fill="#0b1220" />
-      <g fill="none" stroke="#fff" strokeWidth="6" strokeLinejoin="round" strokeLinecap="round">
-        <path d="M20 40h36m-18 0v48" />
-        <path d="M64 40h36m-18 0v48" />
-      </g>
-      <path d="M30 86c22-18 44-6 60-26 4-5 8-10 8-10-2 12-8 22-17 30-11 10-27 16-51 16" fill="url(#g)" opacity="0.9" />
-    </svg>
+    <div className="mt-3">
+      <div className="flex items-center justify-between mb-1">
+        <span className="text-sm font-medium text-slate-700">{label}</span>
+        <span className="text-sm text-slate-600">{value}{unit}</span>
+      </div>
+      <input
+        type="range"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        className="w-full accent-sky-600"
+      />
+      <div className="flex justify-between text-[11px] text-slate-500 mt-1">
+        <span>{min}{unit}</span><span>{max}{unit}</span>
+      </div>
+    </div>
   );
 }
-
-const faq = [
-{ q: "Will ToonTail affect performance or engine cooling?", a: "Designed to leverage existing thrust aft of the prop while maintaining cooling; we target minimal speed impact at cruise. Always monitor engine temps and follow manufacturer guidelines." },
-{ q: "What engines/boats are supported?", a: "ToonTail currently works with Mercury 250–400 HP outboards on pontoons and tritoons. Additional tails are in development for high-HP Yamaha motors and 90–150 HP Mercury motors." },
-{ q: "How is it installed?", a: "A reinforced, removable 316 stainless bracket clamps to the anti-ventilation plate or engine bracket. See installation instructions for torque specs and step-by-step." },
-{ q: "Can I tune the tail height and cleanliness?", a: "Yes: slight trim adjustments can significantly change the angle, giving you control over height and distance; an optional gill/interceptor (coming soon) can boost head pressure for taller tails." },
-{ q: "Is it legal everywhere?", a: "Rules vary by jurisdiction. Always verify local regulations and operate with courtesy." },
-{ q: "Where can I buy one?", a: "Join the waitlist to get in line for the Founder’s run. Available at toontail.com or at a boat show near you." }
- },
-];
