@@ -27,8 +27,8 @@ const EXTRAS = [
 /* -------------------- FAQ DATA -------------------- */
 const faq: { q: string; a: string }[] = [
   {
-    q: "Will ToonTail affect performance or engine cooling?",
-    a: "Designed to leverage existing thrust aft of the prop while maintaining cooling; we target minimal speed impact at cruise. Always monitor engine temps and follow manufacturer guidelines."
+    q: "Will ToonTail affect performance or engine?",
+    a: "Designed to leverage existing thrust aft of the prop whithout impacting normal engine or performance charictoristics; we target minimal speed impact at cruise. Always monitor engine temps and follow manufacturer guidelines."
   },
   {
     q: "What engines/boats are supported?",
@@ -43,8 +43,8 @@ const faq: { q: string; a: string }[] = [
     a: "Yes: slight trim adjustments can significantly change the angle, giving you control over height and distance; an optional gill/interceptor (coming soon) can boost head pressure for taller tails."
   },
   {
-    q: "Is it legal everywhere?",
-    a: "Rules vary by jurisdiction. Always verify local regulations and operate with courtesy."
+    q: "Is it made in the USA?",
+    a: "You bet your Ass it is! 100% from the hardworking folks in MN !"
   },
   {
     q: "Where can I buy one?",
@@ -248,7 +248,7 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
             </div>
           </div>
 
-          <p className="text-xs text-slate-500 mt-2">Videos autoplay muted & loop. Put files in <code>/public/media/</code>.</p>
+          <p className="text-xs text-slate-500 mt-2">Put files in <code>/public/media/</code>.</p>
         </div>
       </div>
     </section>
@@ -305,7 +305,7 @@ function ToonTailLanding() {
         <Section id="how" title="What is ToonTail?" eyebrow="Turn wake into wow">
           <p className="text-lg md:text-xl max-w-3xl">
             ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount of thrust from the prop and
-            redirects it through a tuned, efficient outlet to create a clean, dramatic rooster tail—without sacrificing performance.
+            redirects it through a tuned, efficient outlet to create a clean, dramatic rooster tail—without sacrificing performance. Got Tail ?? Get ToonTail !!
           </p>
         </Section>
 
@@ -323,7 +323,7 @@ function ToonTailLanding() {
                 value={estimator.trimDeg}
                 onChange={(v) => setEstimator((s:any) => ({ ...s, trimDeg: v }))}/>
               <p className="text-xs text-slate-500 mt-3">
-                Calibrated so 30 mph / 350 hp / 10° → ~35 ft height, ~110 ft distance. Actual results vary with prop, hull, load, and water.
+               Performace may vary due to pontoon size, prop size, weight and motor depth.
               </p>
             </div>
 
