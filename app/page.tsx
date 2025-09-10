@@ -175,19 +175,32 @@ const estimation = useMemo(() => {
     </div>
   );
 }
-
-function Nav() {
-  return (
-    <header className="sticky top-0 z-40 backdrop-blur bg-white/60 border-b border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          function Logo({ className = "" }: { className?: string }) {
+// --- Brand logo component (top-level, not inside any other function) ---
+function Logo({ className = "" }: { className?: string }) {
   return (
     <img
       src="/media/ToonTail_Logo.jpeg?v=4"
       alt="ToonTail"
       className={`${className} w-auto`}
     />
+  );
+}
+
+function Nav() {
+  return (
+    <header className="sticky top-0 z-40 backdrop-blur bg-white/60 border-b border-slate-200">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <Logo className="h-8 w-8" />
+          <span className="font-bold tracking-wide">ToonTail</span>
+        </div>
+        <nav className="hidden md:flex items-center gap-6 text-sm text-slate-700">
+          <a href="#estimator" className="hover:text-slate-900">Estimator</a>
+          <a href="#more-angles" className="hover:text-slate-900">More angles</a>
+          <a href="#cta" className="px-3 py-2 rounded-xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</a>
+        </nav>
+      </div>
+    </header>
   );
 }
 
