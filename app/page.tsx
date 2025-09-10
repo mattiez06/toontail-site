@@ -38,27 +38,47 @@ function ToonTailLanding() {
     intakeAssist: false,
   });
 
-  const reducerRatio = useMemo(
-    () => estimator.reducerFrom / estimator.reducerTo,
-    [estimator]
-  );
+  // ---- Estimator inputs (only these three) ----
+const [estimator, setEstimator] = useState({
+  speedMph: 30,   // boat speed
+  horsepower: 350,
+  trimDeg: 10,
+});
 
-  const estimation = useMemo(() => {
-    const v = Math.max(0, estimator.speedMph);
-    const angleRad = (Math.max(5, Math.min(60, estimator.pipeAngle)) * Math.PI) / 180;
-    const trimRad = (Math.max(0, Math.min(20, estimator.trimDeg)) * Math.PI) / 180;
-    const effAngle = angleRad + trimRad * 0.35;
-    const reducerGain = Math.min(2.2, Math.pow(reducerRatio, 0.55));
-    const assistGain = estimator.intakeAssist ? 1.15 : 1.0;
-    const base = (v / 35) * 1.0 * reducerGain * assistGain;
-    const heightFt = Math.round(10 * base * Math.sin(effAngle) * 1.8);
-    const distanceFt = Math.round(10 * base * Math.cos(effAngle) * 2.2);
-    const cleanliness = Math.max(
-      1,
-      Math.min(5, Math.round(3 + (estimator.pipeAngle - 28) / 10 - estimator.trimDeg * 0.05))
-    );
-    return { heightFt, distanceFt, cleanliness };
-  }, [estimator, reducerRatio]);
+// ---- Calibrated math: 30 mph, 350 hp, 10° → 35 ft height, 110 ft distance ----
+const estimation = useMemo(() => {
+  const v   = Math.max(5, estimator.speedMph);
+  const hp  = Math.max(50, estimator.horsepower);
+  const trim = Math.max(0, Math.min(20, estimator.trimDeg)); // clamp 0–20°
+
+  // Baseline targets at (30 mph, 350 hp, 10°)
+  const H_BASE = 35;   // feet
+  const D_BASE = 110;  // feet
+
+  // Exponents & trim sensitivities (tunable)
+  const ALPHA_H = 0.7;   // speed → height
+  const BETA_H  = 0.25;  // hp    → height
+  const TRIM_H  = 0.04;  // +4% height per +1° from 10°
+
+  const ALPHA_D = 1.0;   // speed → distance
+  const BETA_D  = 0.20;  // hp    → distance
+  const TRIM_D  = -0.015; // −1.5% distance per +1° from 10°
+
+  // Trim multipliers (keep sane)
+  const hTrim = Math.max(0.2, 1 + TRIM_H * (trim - 10));
+  const dTrim = Math.max(0.2, 1 + TRIM_D * (trim - 10));
+
+  // Scale relative to the calibration point
+  const height = H_BASE * Math.pow(v / 30, ALPHA_H) * Math.pow(hp / 350, BETA_H) * hTrim;
+  const dist   = D_BASE * Math.pow(v / 30, ALPHA_D) * Math.pow(hp / 350, BETA_D) * dTrim;
+
+  // Optional soft caps (keep outputs realistic)
+  const heightFt   = Math.round(Math.min(60, Math.max(0, height)));
+  const distanceFt = Math.round(Math.min(300, Math.max(1, dist)));
+
+  return { heightFt, distanceFt };
+}, [estimator]);
+
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
