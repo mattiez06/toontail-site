@@ -12,6 +12,8 @@ const MEDIA = {
 };
 
 // Optional extra images grid
+// ...keep MEDIA above...
+
 const EXTRAS = [
   "/media/Alt1.jpeg",
   "/media/Alt2.jpeg",
@@ -21,6 +23,36 @@ const EXTRAS = [
   "/media/Without_ToonTail.jpeg",
   "/media/ToonTail_Logo.jpeg",
 ];
+
+//// ✅ PASTE THIS RIGHT BELOW EXTRAS
+const faq: { q: string; a: string }[] = [
+  {
+    q: "Will ToonTail affect performance or engine cooling?",
+    a: "Designed to leverage existing thrust aft of the prop while maintaining cooling; we target minimal speed impact at cruise. Always monitor engine temps and follow manufacturer guidelines."
+  },
+  {
+    q: "What engines/boats are supported?",
+    a: "ToonTail currently works with Mercury 250–400 HP outboards on pontoons and tritoons. Additional tails are in development for high-HP Yamaha motors and 90–150 HP Mercury motors."
+  },
+  {
+    q: "How is it installed?",
+    a: "A reinforced, removable 316 stainless bracket clamps to the anti-ventilation plate or engine bracket. See installation instructions for torque specs and step-by-step."
+  },
+  {
+    q: "Can I tune the tail height and cleanliness?",
+    a: "Yes: slight trim adjustments can significantly change the angle, giving you control over height and distance; an optional gill/interceptor (coming soon) can boost head pressure for taller tails."
+  },
+  {
+    q: "Is it legal everywhere?",
+    a: "Rules vary by jurisdiction. Always verify local regulations and operate with courtesy."
+  },
+  {
+    q: "Where can I buy one?",
+    a: "Join the waitlist to get in line for the Founder’s run. Available at toontail.com or at a boat show near you."
+  }
+];
+//// ✅ END PASTE
+
 
 export default function Page() {
   return <ToonTailLanding />;
