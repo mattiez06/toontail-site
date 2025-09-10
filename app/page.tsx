@@ -207,7 +207,7 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
             Turn wake into <span className="bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-transparent">wow</span>.
           </h1>
           <p className="mt-4 text-lg md:text-xl text-slate-700 max-w-xl">
-            A tunable bolt-on jet that turns your tritoon’s wake into a clean, crowd-pleasing rooster tail.
+            An efficent bolt-on jet that turns your tritoon’s slow wake into a clean, crowd-pleasing rooster tail.
           </p>
           <div className="mt-5 flex items-center gap-3">
             <button onClick={onCtaClick} className="px-5 py-3 rounded-2xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</button>
