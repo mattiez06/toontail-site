@@ -148,7 +148,7 @@ const estimation = useMemo(() => {
   </div>
 </Section>
 
-      <Section id="gallery" title="Prototype gallery" eyebrow="In the wild (test shots)">
+      <Section id="gallery" title="Before and After Slider">
         <div className="grid lg:grid-cols-2 gap-6">
           <Card>
             <h3 className="text-lg font-semibold">Photo — Before / After</h3>
