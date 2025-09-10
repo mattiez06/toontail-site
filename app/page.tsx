@@ -259,10 +259,20 @@ function HeroVideo() {
           </button>
         ))}
       </div>
-      <div className="rounded-2xl overflow-hidden border">
-        <video key={src} src={src} poster={poster} className="w-full h-auto" autoPlay muted loop playsInline />
-      </div>
-    </div>
+  <div className="relative aspect-[16/9] w-full bg-black">
+    <video
+      key={src}
+      src={src}
+      poster={poster}
+      className="absolute inset-0 h-full w-full object-contain"
+      autoPlay
+      muted
+      loop
+      playsInline
+      preload="metadata"
+    />
+  </div>
+</div>
   );
 }
 
