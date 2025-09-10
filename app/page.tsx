@@ -190,6 +190,7 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
   const [which, setWhich] = useState<"before" | "after">("after");
   const src = which === "after" ? MEDIA.videoAfter : MEDIA.videoBefore;
   const poster = which === "after" ? MEDIA.posterAfter : MEDIA.posterBefore;
+
   return (
     <section className="relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 py-12 md:py-18 grid md:grid-cols-2 gap-8 items-center">
@@ -209,6 +210,7 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
             <a href="#gallery" className="px-5 py-3 rounded-2xl border border-slate-300 font-medium hover:border-slate-400">See results</a>
           </div>
         </div>
+
         <div className="relative">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs uppercase tracking-wide text-slate-500">Hero video:</span>
@@ -216,27 +218,37 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
               <button
                 key={k}
                 onClick={() => setWhich(k)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold border ${which===k?"bg-slate-900 text-white border-slate-900":"bg-white text-slate-700 border-slate-300 hover:border-slate-400"}`}
+                className={`px-3 py-1 rounded-full text-xs font-semibold border ${which===k ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 border-slate-300 hover:border-slate-400"}`}
               >
                 {k.toUpperCase()}
               </button>
             ))}
           </div>
-         <div className="rounded-3xl overflow-hidden shadow ring-1 ring-slate-200">
-  <div className="relative aspect-[16/9] w-full bg-black">
-    <video
-      key={src}
-      src={src}
-      poster={poster}
-      className="absolute inset-0 h-full w-full object-contain"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="metadata"
-    />
-  </div>
-</div>
+
+          <div className="rounded-3xl overflow-hidden shadow ring-1 ring-slate-200">
+            <div className="relative aspect-[16/9] w-full bg-black">
+              <video
+                key={src}
+                poster={poster}
+                className="absolute inset-0 h-full w-full object-contain"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="metadata"
+              >
+                {/* try MP4 first, then MOV as fallback */}
+                <source src={src.replace(".mov",".mp4")} type="video/mp4" />
+                <source src={src.replace(".mp4",".mov")} type="video/quicktime" />
+              </video>
+            </div>
+          </div>
+
+          <p className="text-xs text-slate-500 mt-2">
+            Videos autoplay muted & loop. Put files in <code>/public/media/</code>.
+          </p>
+        </div>
+      </div>
     </section>
   );
 }
