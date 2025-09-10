@@ -59,6 +59,17 @@ export default function Page() {
 }
 
 function ToonTailLanding() {
+  // ...state & math...
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-white text-slate-900">
+      <Nav />
+      <Hero onCtaClick={() => document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" })} />
+      {/* other sections */}
+      <Footer />
+    </div>
+  );
+}
+
   // ---- Estimator inputs (only these three) ----
   const [estimator, setEstimator] = useState({
     speedMph: 30,   // boat speed
