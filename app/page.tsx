@@ -140,7 +140,7 @@ const faq: { q: string; a: string }[] = [
   },
   {
     q: "Is it made in the USA?",
-    a: "You bet it is — designed and built in Minnesota.",
+    a: "You bet your Ass it is — designed and built by those Hot Dish fuled hard workin folks in Minnesota.",
   },
   {
     q: "Where can I buy one?",
