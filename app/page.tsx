@@ -50,7 +50,7 @@ const PRODUCTS: Product[] = [
     priceCents: 39999, // $399.99 founders run
     compareAtCents: 49999, // $499.99 regular
     saleLabel: "Founders Run",
-    paymentLink: "https://buy.stripe.com/your_payment_link",
+    paymentLink: "https://buy.stripe.com/4gMeVdfmT5cg63Ufwu9Ve00",
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
