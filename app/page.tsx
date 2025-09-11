@@ -489,13 +489,18 @@ function CartDrawer({
   }
 
   function checkout() {
-    if (!canCheckout) return;
-    const { product } = items[0];
+  if (!canCheckout) return;
+  const { product } = items[0];
 
-    if (!product.paymentLink) {
-      alert("Checkout link is missing for this item.");
-      return;
-    }
+  if (!product.paymentLink) {
+    alert("Checkout link is missing for this item.");
+    return;
+  }
+
+  // Stripe Payment Link: direct redirect (Stripe page has quantity controls)
+  window.location.href = product.paymentLink;
+}
+
 
     // Stripe Payment Link: direct redirect (quantity selectable on Stripe page)
     window.location.href = product.paymentLink;
