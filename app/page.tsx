@@ -387,28 +387,24 @@ function Watermark() {
 }
 
 /* -------------------- SHOP -------------------- */
-/* -------------------- SHOP -------------------- */
 function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
   return (
     <Section id="shop" title="Shop ToonTail" eyebrow="Order now or join the waitlist">
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {PRODUCTS.map((p) => (
           <div key={p.id} className="rounded-2xl border bg-white overflow-hidden flex flex-col">
+            {p.img && (
             <div className="relative">
-              <img
-                src={p.img || PRODUCT_IMAGE_DEFAULT}
-                alt={p.name}
-                className="w-full aspect-[4/3] object-cover"
-              />
-              {/* Optional overlay watermark; safe to remove if you only want the baked watermark */}
+              <img src={p.img || PRODUCT_IMAGE_DEFAULT} alt={p.name} className="w-full aspect-[4/3] object-cover" />
+              {/* Watermark overlay (ToonTail logo) */}
               <img
                 src={MEDIA.logo}
-                alt=""
+                alt="ToonTail watermark"
                 className="pointer-events-none select-none absolute bottom-2 right-2 w-16 opacity-30"
               />
             </div>
-
-            <div className="p-5 flex-1 flex flex-col">
+          )}
+          <div className="p-5 flex-1 flex flex-col">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="font-semibold text-lg">{p.name}</h3>
                 <span
@@ -421,10 +417,7 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
                   {p.status === "in_stock" ? "In stock" : "Coming soon"}
                 </span>
               </div>
-
-              {p.subtitle && (
-                <p className="text-sm text-slate-600 mt-1">{p.subtitle}</p>
-              )}
+              {p.subtitle && <p className="text-sm text-slate-600 mt-1">{p.subtitle}</p>}
 
               <div className="mt-3 text-sm text-slate-700">
                 {p.priceLabel ? (
@@ -441,6 +434,12 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
                   ) : (
                     <div className="font-medium">{formatCents(p.priceCents)}</div>
                   )
+                ) : (
+                  <div className="text-slate-500">Price TBD</div>
+                )}
+              </div>
+                ) : p.priceCents != null ? (
+                  <div className="font-medium">{formatCents(p.priceCents)}</div>
                 ) : (
                   <div className="text-slate-500">Price TBD</div>
                 )}
@@ -469,14 +468,10 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
           </div>
         ))}
       </div>
-
-      <p className="text-xs text-slate-500 mt-4">
-        Taxes and shipping calculated at checkout. U.S. orders only for initial run.
-      </p>
+      <p className="text-xs text-slate-500 mt-4">Taxes and shipping calculated at checkout. U.S. orders only for initial run.</p>
     </Section>
   );
 }
-
 
 function CartDrawer({
   open,
@@ -515,6 +510,15 @@ function CartDrawer({
   function checkout() {
     if (!canCheckout) return;
     const { product } = items[0];
+
+    if (!product.paymentLink) {
+      alert("Checkout link is missing for this item.");
+      return;
+    }
+
+    // Stripe Payment Link: direct redirect (quantity selectable on Stripe page)
+    window.location.href = product.paymentLink;
+  } = items[0];
     const qty = Math.max(1, items[0].line.qty);
     const url = `${product.paymentLink}${product.paymentLink!.includes("?") ? "&" : "?"}quantity=${qty}`;
     window.location.href = url;
@@ -937,4 +941,3 @@ function Footer() {
 export default function Page() {
   return <ToonTailLanding />;
 }
-
