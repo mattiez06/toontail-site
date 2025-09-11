@@ -24,13 +24,18 @@ const EXTRAS = [
   "/media/ToonTail_Logo.jpeg",
 ];
 
+// Default product image (watermarked black-on-white)
+const PRODUCT_IMAGE_DEFAULT = "/media/toontail_black_logo_watermarked.png";
+
 /* -------------------- PRODUCT / CART DATA -------------------- */
 export type Product = {
   id: string;
   name: string;
   subtitle?: string;
   status: "in_stock" | "coming_soon";
-  priceCents?: number; // only for in-stock items; display only
+  priceCents?: number; // current price used for subtotal & PayPal
+  compareAtCents?: number; // regular price for strikethrough display
+  saleLabel?: string; // e.g., "Founders Run"
   priceLabel?: string; // overrides price display if present
   paymentLink?: string; // Stripe Payment Link for one item; append ?quantity=Q
   img?: string;
@@ -39,34 +44,35 @@ export type Product = {
 const PRODUCTS: Product[] = [
   {
     id: "tt-mercury-250-350",
-    name: "ToonTail for Mercury 250–350 HP",
+    name: "ToonTail for Mercury 250–400 HP",
     subtitle: "Verado & compatible models (pontoon/tritoon)",
     status: "in_stock",
-    priceLabel: "Price shown at checkout",
-    // TODO: paste your real Stripe Payment Link below (e.g., "https://buy.stripe.com/...")
+    priceCents: 39999, // $399.99 founders run
+    compareAtCents: 49999, // $499.99 regular
+    saleLabel: "Founders Run",
     paymentLink: "https://buy.stripe.com/your_payment_link",
-    img: "/media/With_ToonTail.jpeg",
+    img: PRODUCT_IMAGE_DEFAULT,
   },
   {
     id: "tt-yamaha-90-150",
     name: "ToonTail Mini — Yamaha 90–150 HP",
     subtitle: "Prototype — join waitlist",
     status: "coming_soon",
-    img: "/media/Alt1.jpeg",
+    img: PRODUCT_IMAGE_DEFAULT,
   },
   {
     id: "tt-yamaha-225-425",
     name: "ToonTail Magnum — Yamaha 225–425 HP",
     subtitle: "Prototype — join waitlist",
     status: "coming_soon",
-    img: "/media/Alt2.jpeg",
+    img: PRODUCT_IMAGE_DEFAULT,
   },
   {
     id: "tt-mercury-90-150",
     name: "ToonTail Mini — Mercury 90–150 HP",
     subtitle: "Prototype — join waitlist",
     status: "coming_soon",
-    img: "/media/Alt3.jpeg",
+    img: PRODUCT_IMAGE_DEFAULT,
   },
 ];
 
@@ -387,8 +393,18 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {PRODUCTS.map((p) => (
           <div key={p.id} className="rounded-2xl border bg-white overflow-hidden flex flex-col">
-            {p.img && <img src={p.img} alt={p.name} className="w-full aspect-[4/3] object-cover" />}
-            <div className="p-5 flex-1 flex flex-col">
+            {p.img && (
+            <div className="relative">
+              <img src={p.img || PRODUCT_IMAGE_DEFAULT} alt={p.name} className="w-full aspect-[4/3] object-cover" />
+              {/* Watermark overlay (ToonTail logo) */}
+              <img
+                src={MEDIA.logo}
+                alt="ToonTail watermark"
+                className="pointer-events-none select-none absolute bottom-2 right-2 w-16 opacity-30"
+              />
+            </div>
+          )}
+          <div className="p-5 flex-1 flex flex-col">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="font-semibold text-lg">{p.name}</h3>
                 <span
@@ -406,6 +422,22 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
               <div className="mt-3 text-sm text-slate-700">
                 {p.priceLabel ? (
                   <div className="font-medium">{p.priceLabel}</div>
+                ) : p.priceCents != null ? (
+                  p.compareAtCents && p.compareAtCents > p.priceCents ? (
+                    <div className="flex items-center flex-wrap gap-2">
+                      <span className="font-semibold">{formatCents(p.priceCents)}</span>
+                      <span className="line-through text-slate-400">{formatCents(p.compareAtCents)}</span>
+                      <span className="text-emerald-700 text-[11px] font-semibold px-2 py-0.5 bg-emerald-100 rounded-full">
+                        {p.saleLabel || "Sale"}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="font-medium">{formatCents(p.priceCents)}</div>
+                  )
+                ) : (
+                  <div className="text-slate-500">Price TBD</div>
+                )}
+              </div>
                 ) : p.priceCents != null ? (
                   <div className="font-medium">{formatCents(p.priceCents)}</div>
                 ) : (
