@@ -818,12 +818,12 @@ function HeroVideo() {
 }
 
 /* -------------------- FOOTER -------------------- */
-function Footer() {
+function Footer(): JSX.Element {
   return (
     <footer className="mt-10 border-t">
       <div className="max-w-7xl mx-auto px-4 py-10 grid md:grid-cols-3 gap-6 items-start">
         <div className="flex items-center gap-3">
-          <Logo className="h-8 w-8" />
+          <img src="/media/ToonTail_Logo.jpeg?v=8" alt="ToonTail" className="h-8 w-8" />
           <div>
             <div className="font-bold">ToonTail</div>
             <div className="text-sm text-slate-500">© {new Date().getFullYear()} ToonTail LLC. All rights reserved.</div>
@@ -832,7 +832,7 @@ function Footer() {
         <div className="text-sm text-slate-600">
           <div className="font-semibold mb-1">Docs</div>
           <ul className="space-y-1">
-            <li><a className="hover:text-slate-900" href="/install-guide">Install guide</a>
+            <li><a className="hover:text-slate-900" href="/install-guide">Install guide</a></li>
             <li><a className="hover:text-slate-900" href="#">Dealer program</a></li>
             <li><a className="hover:text-slate-900" href="#">Media kit</a></li>
           </ul>
