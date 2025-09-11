@@ -381,7 +381,6 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
           </div>
 
           <p className="text-xs text-slate-500 mt-2">
-            Put files in <code>/public/media/</code>.
           </p>
         </div>
       </div>
