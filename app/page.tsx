@@ -832,7 +832,7 @@ function Footer() {
         <div className="text-sm text-slate-600">
           <div className="font-semibold mb-1">Docs</div>
           <ul className="space-y-1">
-            <li><a className="hover:text-slate-900" href="#">Install guide (coming soon)</a></li>
+            <li><a className="hover:text-slate-900" href="/install-guide">Install guide</a>
             <li><a className="hover:text-slate-900" href="#">Dealer program</a></li>
             <li><a className="hover:text-slate-900" href="#">Media kit</a></li>
           </ul>
