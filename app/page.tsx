@@ -24,29 +24,6 @@ const EXTRAS = [
   "/media/ToonTail_Logo.jpeg",
 ];
 
-// Default product image (watermarked black-on-white)
-const PRODUCT_IMAGE_DEFAULT = "/media/toontail_black_logo_watermarked.png";
-
-// Merch images (upload these to /public/media/merch/)
-const MERCH = {
-  hat: "/media/merch/hat-toontail.png",
-  tee: "/media/merch/tee-front-back.png",
-};
-
-/* -------------------- PRODUCT / CART DATA -------------------- */
-export type Product = {
-  id: string;
-  name: string;
-  subtitle?: string;
-  status: "in_stock" | "coming_soon";
-  priceCents?: number; // current price used for subtotal & PayPal
-  compareAtCents?: number; // regular price for strikethrough display
-  saleLabel?: string; // e.g., "Founders Run"
-  priceLabel?: string; // overrides price display if present
-  paymentLink?: string; // Stripe Payment Link for one item; append ?quantity=Q
-  img?: string;
-};
-
 const PRODUCTS: Product[] = [
   {
     id: "tt-mercury-250-350",
@@ -61,10 +38,24 @@ const PRODUCTS: Product[] = [
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
-    id: "tt-trucker-hat"$1img: MERCH.hat,
+    id: "tt-trucker-hat",
+    name: "ToonTail Trucker Hat — 'Got Tail ?'",
+    subtitle: "Black/mesh snapback, embroidered TT mark",
+    status: "in_stock",
+    priceCents: 3999, // $39.99
+    // Optional: Stripe Payment Link for the hat
+    paymentLink: "https://buy.stripe.com/REPLACE_WITH_HAT_LINK",
+    img: MERCH.hat,
   },
   {
-    id: "tt-tee"$1img: MERCH.tee,
+    id: "tt-tee",
+    name: "ToonTail Tee — 'Got Tail ?'",
+    subtitle: "Unisex tee, front TT logo, back 'Got Tail ?'",
+    status: "in_stock",
+    priceCents: 2999, // $29.99
+    // Optional: Stripe Payment Link for the tee
+    paymentLink: "https://buy.stripe.com/REPLACE_WITH_TEE_LINK",
+    img: MERCH.tee,
   },
   {
     id: "tt-yamaha-90-150",
@@ -88,27 +79,6 @@ const PRODUCTS: Product[] = [
     img: PRODUCT_IMAGE_DEFAULT,
   },
 ];
-
-export type CartLine = { productId: string; qty: number };
-
-function loadCart(): CartLine[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem("tt_cart");
-    return raw ? (JSON.parse(raw) as CartLine[]) : [];
-  } catch {
-    return [];
-  }
-}
-function saveCart(lines: CartLine[]) {
-  if (typeof window === "undefined") return;
-  localStorage.setItem("tt_cart", JSON.stringify(lines));
-}
-
-function formatCents(n?: number) {
-  if (n == null) return "";
-  return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(n / 100);
-}
 
 /* -------------------- FAQ DATA -------------------- */
 const faq: { q: string; a: string }[] = [
