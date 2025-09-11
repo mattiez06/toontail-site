@@ -483,6 +483,83 @@ function CartDrawer({
     window.location.href = url;
   }
 
+  // ---------- PayPal/Venmo (Next.js-friendly) ----------
+  const [paypalReady, setPaypalReady] = useState(false);
+  const paypalContainerId = "paypal-buttons";
+
+  // replace with your real PayPal LIVE client id
+  const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "YOUR_CLIENT_ID";
+
+  // only render PayPal when: drawer open + exactly one item + subtotal has a value
+  const shouldShowPayPal = open && items.length === 1 && subtotalCents > 0;
+
+  useEffect(() => {
+    if (!shouldShowPayPal) return;
+
+    // If the SDK is already on the page, no need to add again
+    const hasSDK = typeof window !== "undefined" && (window as any).paypal;
+    if (hasSDK) {
+      setPaypalReady(true);
+      return;
+    }
+
+    // Dynamically inject the PayPal SDK client-side
+    const script = document.createElement("script");
+    script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&components=buttons&enable-funding=venmo`;
+    script.async = true;
+    script.onload = () => setPaypalReady(true);
+    script.onerror = () => console.error("Failed to load PayPal SDK");
+    document.body.appendChild(script);
+
+    return () => {
+      // don't remove the script to avoid reloading between opens
+    };
+  }, [shouldShowPayPal, PAYPAL_CLIENT_ID]);
+
+  useEffect(() => {
+    if (!paypalReady || !shouldShowPayPal) return;
+    const paypal = (window as any).paypal;
+    if (!paypal) return;
+
+    // Clear previous renders to avoid duplicate buttons when qty changes
+    const host = document.getElementById(paypalContainerId);
+    if (!host) return;
+    host.innerHTML = "";
+
+    const amount = (subtotalCents / 100).toFixed(2);
+    const { product } = items[0];
+    const description = product.name;
+
+    paypal
+      .Buttons({
+        style: { layout: "vertical", color: "blue", shape: "pill", label: "pay" },
+        createOrder: (_data: any, actions: any) => {
+          return actions.order.create({
+            purchase_units: [
+              {
+                amount: { value: amount },
+                description,
+              },
+            ],
+          });
+        },
+        onApprove: async (_data: any, actions: any) => {
+          const details = await actions.order.capture();
+          // TODO: send details.id to your backend/email for fulfillment
+          alert("Thanks! Payment ID: " + details.id);
+          // Clear cart after success
+          setLines([]);
+          saveCart([]);
+          onClose();
+        },
+        onError: (err: any) => {
+          console.error("PayPal error", err);
+          alert("Payment failed. Please try again or use the card checkout.");
+        },
+      })
+      .render(`#${paypalContainerId}`);
+  }, [paypalReady, shouldShowPayPal, subtotalCents, items, setLines, onClose]);
+
   return (
     <div className={`fixed inset-0 z-50 ${open ? "" : "pointer-events-none"}`} aria-hidden={!open}>
       <div
@@ -499,7 +576,7 @@ function CartDrawer({
           <button onClick={onClose} className="text-slate-500 hover:text-slate-700">✕</button>
         </div>
 
-        <div className="p-5 space-y-4 overflow-auto h-[calc(100%-200px)]">
+        <div className="p-5 space-y-4 overflow-auto h-[calc(100%-260px)]">
           {items.length === 0 && <p className="text-slate-600">Your cart is empty.</p>}
           {items.map(({ line, product }) => (
             <div key={product.id} className="flex gap-3 items-center">
@@ -536,7 +613,7 @@ function CartDrawer({
           </div>
           {hasMixed && (
             <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
-              Checkout supports one item type at a time. Please remove extra items.
+              Stripe/PayPal checkout supports one item type at a time. Please remove extra items.
             </p>
           )}
           {!canCheckout && items.length === 1 && (
@@ -544,16 +621,26 @@ function CartDrawer({
               This item uses a waitlist or has no payment link yet. Use the waitlist button on the product card.
             </p>
           )}
-          <button
-            disabled={!canCheckout}
-            onClick={checkout}
-            className={`w-full px-4 py-3 rounded-xl font-semibold shadow ${
-              canCheckout ? "bg-sky-600 text-white hover:bg-sky-700" : "bg-slate-200 text-slate-500 cursor-not-allowed"
-            }`}
-          >
-            Checkout
-          </button>
-          <p className="text-[11px] text-slate-500">By checking out you agree to our Safety & Legal terms. Taxes & shipping at checkout.</p>
+
+          <div className="grid gap-2">
+            <button
+              disabled={!canCheckout}
+              onClick={checkout}
+              className={`w-full px-4 py-3 rounded-xl font-semibold shadow ${
+                canCheckout ? "bg-sky-600 text-white hover:bg-sky-700" : "bg-slate-200 text-slate-500 cursor-not-allowed"
+              }`}
+            >
+              Checkout (Card / Apple / Google)
+            </button>
+
+            {/* PayPal + Venmo Buttons mount here (only when one item + subtotal) */}
+            <div id={paypalContainerId} className="w-full" />
+            <p className="text-[11px] text-slate-500">
+              PayPal also shows Venmo for eligible U.S. buyers.
+            </p>
+          </div>
+
+          <p className="text-[11px] text-slate-500 mt-1">By checking out you agree to our Safety & Legal terms. Taxes & shipping calculated at checkout.</p>
         </div>
       </aside>
     </div>
