@@ -95,5 +95,9 @@ const PRODUCTS: Product[] = [
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
-    id: "tt-mercury-90-150",
-    name: "ToonTail Min
+  id: "tt-mercury-90-150",
+  name: "ToonTail Mini — Mercury 90–150 HP",
+  subtitle: "Prototype — join waitlist",
+  status: "coming_soon",
+  img: PRODUCT_IMAGE_DEFAULT,
+},
