@@ -65,7 +65,7 @@ const PRODUCTS: Product[] = [
     subtitle: "Black/mesh snapback, embroidered TT mark",
     status: "in_stock",
     priceCents: 3999,
-    paymentLink: "https://buy.stripe.com/REPLACE_WITH_HAT_LINK",
+    paymentLink: "https://buy.stripe.com/dRm8wP8Yv34877Y5VU9Ve02",
     img: MERCH.hat,
   },
   {
@@ -74,7 +74,7 @@ const PRODUCTS: Product[] = [
     subtitle: "Unisex tee, front TT logo, back 'Got Tail ?'",
     status: "in_stock",
     priceCents: 2999,
-    paymentLink: "https://buy.stripe.com/REPLACE_WITH_TEE_LINK",
+    paymentLink: "https://buy.stripe.com/14A00jeiP48c3VM3NM9Ve01",
     img: MERCH.tee,
   },
   {
