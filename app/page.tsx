@@ -3,6 +3,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 
 /* -------------------- MEDIA -------------------- */
+/* Update these names to match /public/media exactly (case-sensitive) */
 const MEDIA = {
   videoBefore: "/media/toontail-before.mp4?v=8",
   videoAfter: "/media/toontail-after.mp4?v=8",
@@ -23,8 +24,14 @@ const EXTRAS = [
   "/media/ToonTail_Logo.jpeg",
 ];
 
-// Default watermarked product image used across products
+// Default product image (watermarked black-on-white)
 const PRODUCT_IMAGE_DEFAULT = "/media/toontail_black_logo_watermarked.png";
+
+// Merch images (upload these to /public/media/merch/)
+const MERCH = {
+  hat: "/media/merch/hat-toontail.png",
+  tee: "/media/merch/tee-front-back.png",
+};
 
 /* -------------------- PRODUCT / CART DATA -------------------- */
 export type Product = {
@@ -32,11 +39,11 @@ export type Product = {
   name: string;
   subtitle?: string;
   status: "in_stock" | "coming_soon";
-  priceCents?: number;        // current price used for subtotal & PayPal
-  compareAtCents?: number;    // regular price (strikethrough)
-  saleLabel?: string;         // "Founders Run"
-  priceLabel?: string;        // overrides price display if set
-  paymentLink?: string;       // Stripe Payment Link
+  priceCents?: number; // current price used for subtotal & PayPal
+  compareAtCents?: number; // regular price for strikethrough display
+  saleLabel?: string; // e.g., "Founders Run"
+  priceLabel?: string; // overrides price display if present
+  paymentLink?: string; // Stripe Payment Link for one item; append ?quantity=Q
   img?: string;
 };
 
@@ -46,12 +53,18 @@ const PRODUCTS: Product[] = [
     name: "ToonTail for Mercury 250–400 HP",
     subtitle: "Verado & compatible models (pontoon/tritoon)",
     status: "in_stock",
-    priceCents: 39999,       // $399.99 Founders Run
-    compareAtCents: 49999,   // $499.99 regular
+    priceCents: 39999,
+    compareAtCents: 49999,
     saleLabel: "Founders Run",
     // ⬇️ Paste your real Stripe Payment Link here
-    paymentLink: "https://buy.stripe.com/4gMeVdfmT5cg63Ufwu9Ve00",
+    paymentLink: "https://buy.stripe.com/REPLACE_WITH_YOUR_LINK",
     img: PRODUCT_IMAGE_DEFAULT,
+  },
+  {
+    id: "tt-trucker-hat"$1img: MERCH.hat,
+  },
+  {
+    id: "tt-tee"$1img: MERCH.tee,
   },
   {
     id: "tt-yamaha-90-150",
@@ -91,6 +104,7 @@ function saveCart(lines: CartLine[]) {
   if (typeof window === "undefined") return;
   localStorage.setItem("tt_cart", JSON.stringify(lines));
 }
+
 function formatCents(n?: number) {
   if (n == null) return "";
   return new Intl.NumberFormat(undefined, { style: "currency", currency: "USD" }).format(n / 100);
@@ -104,11 +118,11 @@ const faq: { q: string; a: string }[] = [
   },
   {
     q: "What engines/boats are supported?",
-    a: "ToonTail currently works with select Mercury 250–400 HP outboards on pontoons and tritoons. Additional tails are in development for high-HP Yamaha motors and 90–150 HP Mercury/Yamaha motors.",
+    a: "ToonTail currently works with select Mercury 250–350 HP outboards on pontoons and tritoons. Additional tails are in development for high‑HP Yamaha motors and 90–150 HP Mercury/Yamaha motors.",
   },
   {
     q: "How is it installed?",
-    a: "A reinforced, removable 316 stainless bracket clamps to the anti-ventilation plate or engine bracket. See installation instructions for torque specs and step-by-step.",
+    a: "A reinforced, removable 316 stainless bracket clamps to the anti‑ventilation plate or engine bracket. See installation instructions for torque specs and step‑by‑step.",
   },
   {
     q: "Can I tune the tail height and cleanliness?",
@@ -120,7 +134,7 @@ const faq: { q: string; a: string }[] = [
   },
   {
     q: "Where can I buy one?",
-    a: "Order the Mercury 250–400 HP model here. For other engines, join the waitlist to get in line for the Founder’s run.",
+    a: "Order the Mercury 250–350 HP model here. For other engines, join the waitlist to get in line for the Founder’s run.",
   },
 ];
 
@@ -130,7 +144,9 @@ function Section({ id, eyebrow, title, children }: any) {
     <section id={id} className="py-14 md:py-20">
       <div className="max-w-7xl mx-auto px-4">
         <div className="mb-6">
-          {eyebrow && <div className="text-xs font-semibold tracking-wide uppercase text-sky-700">{eyebrow}</div>}
+          {eyebrow && (
+            <div className="text-xs font-semibold tracking-wide uppercase text-sky-700">{eyebrow}</div>
+          )}
           <h2 className="text-2xl md:text-3xl font-extrabold mt-1">{title}</h2>
         </div>
         {children}
@@ -153,16 +169,29 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function SliderRow({
-  label, unit, value, onChange, min, max, step = 1,
+  label,
+  unit,
+  value,
+  onChange,
+  min,
+  max,
+  step = 1,
 }: {
-  label: string; unit: string; value: number;
-  onChange: (v: number) => void; min: number; max: number; step?: number;
+  label: string;
+  unit: string;
+  value: number;
+  onChange: (v: number) => void;
+  min: number;
+  max: number;
+  step?: number;
 }) {
   return (
     <div className="mt-3">
       <div className="flex items-center justify-between mb-1">
         <span className="text-sm font-medium text-slate-700">{label}</span>
-        <span className="text-sm text-slate-600">{value}{unit}</span>
+        <span className="text-sm text-slate-600">{value}
+          {unit}
+        </span>
       </div>
       <input
         type="range"
@@ -174,24 +203,37 @@ function SliderRow({
         className="w-full accent-sky-600"
       />
       <div className="flex justify-between text-[11px] text-slate-500 mt-1">
-        <span>{min}{unit}</span><span>{max}{unit}</span>
+        <span>
+          {min}
+          {unit}
+        </span>
+        <span>
+          {max}
+          {unit}
+        </span>
       </div>
     </div>
   );
 }
 
 function MiniChart({ height, distance }: { height: number; distance: number }) {
-  const H_MIN = 0, H_MAX = 60;
-  const D_MIN = 0, D_MAX = 300;
-  const w = 340, h = 160, pad = 20;
+  // Fixed axis so extremes look dramatic
+  const H_MIN = 0,
+    H_MAX = 60;
+  const D_MIN = 0,
+    D_MAX = 300;
+  const w = 340,
+    h = 160,
+    pad = 20;
 
   const hC = Math.max(H_MIN, Math.min(H_MAX, height));
   const dC = Math.max(D_MIN, Math.min(D_MAX, distance));
 
   const x = pad + ((dC - D_MIN) / (D_MAX - D_MIN)) * (w - pad * 2);
-  const y = (h - pad) - ((hC - H_MIN) / (H_MAX - H_MIN)) * (h - pad * 2);
+  const y = h - pad - ((hC - H_MIN) / (H_MAX - H_MIN)) * (h - pad * 2);
 
-  const x0 = pad, y0 = h - pad;
+  const x0 = pad,
+    y0 = h - pad;
   const cx = x0 + (x - x0) / 2;
   const cy = y - 40 * (hC / (H_MAX || 1)) + 20;
   const strokeW = 4 + 4 * (hC / (H_MAX || 1));
@@ -209,14 +251,24 @@ function MiniChart({ height, distance }: { height: number; distance: number }) {
       <rect x="0" y={h - 12} width={w} height={12} fill="#94a3b8" opacity="0.3" />
       <path d={path} stroke="url(#jet)" strokeWidth={strokeW} fill="none" />
       <circle cx={x} cy={y} r="4" fill="#0ea5e9" />
-      <text x="10" y="14" fontSize="10" fill="#334155">Tail arc (illustrative)</text>
+      <text x="10" y="14" fontSize="10" fill="#334155">
+        Tail arc (illustrative)
+      </text>
     </svg>
   );
 }
 
 function BeforeAfter({
-  beforeSrc, afterSrc, labelBefore = "Before", labelAfter = "After",
-}: { beforeSrc: string; afterSrc: string; labelBefore?: string; labelAfter?: string }) {
+  beforeSrc,
+  afterSrc,
+  labelBefore = "Before",
+  labelAfter = "After",
+}: {
+  beforeSrc: string;
+  afterSrc: string;
+  labelBefore?: string;
+  labelAfter?: string;
+}) {
   const [pos, setPos] = useState(50);
   return (
     <div className="rounded-2xl overflow-hidden relative select-none">
@@ -228,7 +280,10 @@ function BeforeAfter({
         <span className="absolute top-2 left-2 text-xs font-semibold px-2 py-1 rounded bg-slate-900/70 text-white">{labelBefore}</span>
         <span className="absolute top-2 right-2 text-xs font-semibold px-2 py-1 rounded bg-slate-900/70 text-white">{labelAfter}</span>
         <input
-          type="range" min={0} max={100} value={pos}
+          type="range"
+          min={0}
+          max={100}
+          value={pos}
           onChange={(e) => setPos(Number(e.target.value))}
           className="absolute bottom-3 left-1/2 -translate-x-1/2 w-2/3 accent-sky-600"
         />
@@ -256,7 +311,7 @@ function Nav({ onOpenCart }: { onOpenCart: () => void }) {
           <a href="#more-angles" className="hover:text-slate-900">More angles</a>
           <a href="#faq" className="hover:text-slate-900">FAQ</a>
           <button onClick={onOpenCart} className="px-3 py-2 rounded-xl border border-slate-300 hover:border-slate-400">Cart</button>
-          <a href="#cta" className="px-3 py-2 rounded-2xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</a>
+          <a href="#cta" className="px-3 py-2 rounded-xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</a>
         </nav>
       </div>
     </header>
@@ -291,11 +346,15 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
         <div className="relative">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs uppercase tracking-wide text-slate-500">Hero video:</span>
-            {(["before","after"] as const).map((k) => (
+            {(["before", "after"] as const).map((k) => (
               <button
                 key={k}
                 onClick={() => setWhich(k)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold border ${which===k ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 border-slate-300 hover:border-slate-400"}`}
+                className={`px-3 py-1 rounded-full text-xs font-semibold border ${
+                  which === k
+                    ? "bg-slate-900 text-white border-slate-900"
+                    : "bg-white text-slate-700 border-slate-300 hover:border-slate-400"
+                }`}
               >
                 {k.toUpperCase()}
               </button>
@@ -314,13 +373,16 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
                 playsInline
                 preload="metadata"
               >
-                <source src={src.replace(".mov",".mp4")} type="video/mp4" />
-                <source src={src.replace(".mp4",".mov")} type="video/quicktime" />
+                {/* Try MP4 first, then MOV fallback if your files are .mov */}
+                <source src={src.replace(".mov", ".mp4")} type="video/mp4" />
+                <source src={src.replace(".mp4", ".mov")} type="video/quicktime" />
               </video>
             </div>
           </div>
 
-          <p className="text-xs text-slate-500 mt-2">Put files in <code>/public/media/</code>.</p>
+          <p className="text-xs text-slate-500 mt-2">
+            Put files in <code>/public/media/</code>.
+          </p>
         </div>
       </div>
     </section>
@@ -329,6 +391,7 @@ function Hero({ onCtaClick }: { onCtaClick: () => void }) {
 
 /* -------------------- WATERMARK -------------------- */
 function Watermark() {
+  // purely decorative
   return (
     <div aria-hidden className="pointer-events-none absolute inset-0 flex items-center justify-center">
       <img src={MEDIA.logo} alt="" className="w-[90vw] max-w-[900px] opacity-5 blur-[0.5px] select-none" />
@@ -343,21 +406,18 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {PRODUCTS.map((p) => (
           <div key={p.id} className="rounded-2xl border bg-white overflow-hidden flex flex-col">
+            {p.img && (
             <div className="relative">
-              <img
-                src={p.img || PRODUCT_IMAGE_DEFAULT}
-                alt={p.name}
-                className="w-full aspect-[4/3] object-cover"
-              />
-              {/* Optional overlay watermark; safe to remove if you only want the baked watermark */}
+              <img src={p.img || PRODUCT_IMAGE_DEFAULT} alt={p.name} className="w-full aspect-[4/3] object-cover" />
+              {/* Watermark overlay (ToonTail logo) */}
               <img
                 src={MEDIA.logo}
-                alt=""
+                alt="ToonTail watermark"
                 className="pointer-events-none select-none absolute bottom-2 right-2 w-16 opacity-30"
               />
             </div>
-
-            <div className="p-5 flex-1 flex flex-col">
+          )}
+          <div className="p-5 flex-1 flex flex-col">
               <div className="flex items-center justify-between gap-2">
                 <h3 className="font-semibold text-lg">{p.name}</h3>
                 <span
@@ -370,7 +430,6 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
                   {p.status === "in_stock" ? "In stock" : "Coming soon"}
                 </span>
               </div>
-
               {p.subtitle && <p className="text-sm text-slate-600 mt-1">{p.subtitle}</p>}
 
               <div className="mt-3 text-sm text-slate-700">
@@ -392,6 +451,12 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
                   <div className="text-slate-500">Price TBD</div>
                 )}
               </div>
+                ) : p.priceCents != null ? (
+                  <div className="font-medium">{formatCents(p.priceCents)}</div>
+                ) : (
+                  <div className="text-slate-500">Price TBD</div>
+                )}
+              </div>
 
               <div className="mt-4 flex gap-2">
                 {p.status === "in_stock" ? (
@@ -404,7 +469,9 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
                 ) : (
                   <a
                     className="flex-1 px-4 py-2 rounded-xl border font-medium hover:border-slate-400 text-center"
-                    href={`mailto:info@toontail.com?subject=ToonTail%20waitlist%20-%20${encodeURIComponent(p.name)}`}
+                    href={`mailto:info@toontail.com?subject=ToonTail%20waitlist%20-%20${encodeURIComponent(
+                      p.name
+                    )}`}
                   >
                     Join waitlist
                   </a>
@@ -414,15 +481,11 @@ function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
           </div>
         ))}
       </div>
-
-      <p className="text-xs text-slate-500 mt-4">
-        Taxes and shipping calculated at checkout. U.S. orders only for initial run.
-      </p>
+      <p className="text-xs text-slate-500 mt-4">Taxes and shipping calculated at checkout. U.S. orders only for initial run.</p>
     </Section>
   );
 }
 
-/* -------------------- CART DRAWER (Stripe + PayPal/Venmo) -------------------- */
 function CartDrawer({
   open,
   onClose,
@@ -438,8 +501,8 @@ function CartDrawer({
     .map((l) => ({ line: l, product: PRODUCTS.find((p) => p.id === l.productId)! }))
     .filter((x) => !!x.product);
 
-  const hasMixed = items.length > 1; // we support single-SKU checkout for Payment Links
-  const canCheckout = items.length === 1 && !!items[0].product.paymentLink;
+  const hasMixed = items.length > 1; // we only support single-SKU checkout via Stripe Payment Link
+  const canCheckout = items.length === 1 && items[0].product.paymentLink;
 
   const subtotalCents = items.reduce((sum, x) => sum + (x.product.priceCents || 0) * x.line.qty, 0);
 
@@ -468,29 +531,43 @@ function CartDrawer({
 
     // Stripe Payment Link: direct redirect (quantity selectable on Stripe page)
     window.location.href = product.paymentLink;
+  } = items[0];
+    const qty = Math.max(1, items[0].line.qty);
+    const url = `${product.paymentLink}${product.paymentLink!.includes("?") ? "&" : "?"}quantity=${qty}`;
+    window.location.href = url;
   }
 
-  // ---------- PayPal/Venmo (client-side, optional) ----------
+  // ---------- PayPal/Venmo (Next.js-friendly) ----------
   const [paypalReady, setPaypalReady] = useState(false);
   const paypalContainerId = "paypal-buttons";
+
+  // replace with your real PayPal LIVE client id
   const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "YOUR_CLIENT_ID";
+
+  // only render PayPal when: drawer open + exactly one item + subtotal has a value
   const shouldShowPayPal = open && items.length === 1 && subtotalCents > 0;
 
   useEffect(() => {
     if (!shouldShowPayPal) return;
 
+    // If the SDK is already on the page, no need to add again
     const hasSDK = typeof window !== "undefined" && (window as any).paypal;
     if (hasSDK) {
       setPaypalReady(true);
       return;
     }
 
+    // Dynamically inject the PayPal SDK client-side
     const script = document.createElement("script");
     script.src = `https://www.paypal.com/sdk/js?client-id=${PAYPAL_CLIENT_ID}&components=buttons&enable-funding=venmo`;
     script.async = true;
     script.onload = () => setPaypalReady(true);
     script.onerror = () => console.error("Failed to load PayPal SDK");
     document.body.appendChild(script);
+
+    return () => {
+      // don't remove the script to avoid reloading between opens
+    };
   }, [shouldShowPayPal, PAYPAL_CLIENT_ID]);
 
   useEffect(() => {
@@ -498,6 +575,7 @@ function CartDrawer({
     const paypal = (window as any).paypal;
     if (!paypal) return;
 
+    // Clear previous renders to avoid duplicate buttons when qty changes
     const host = document.getElementById(paypalContainerId);
     if (!host) return;
     host.innerHTML = "";
@@ -511,12 +589,19 @@ function CartDrawer({
         style: { layout: "vertical", color: "blue", shape: "pill", label: "pay" },
         createOrder: (_data: any, actions: any) => {
           return actions.order.create({
-            purchase_units: [{ amount: { value: amount }, description }],
+            purchase_units: [
+              {
+                amount: { value: amount },
+                description,
+              },
+            ],
           });
         },
         onApprove: async (_data: any, actions: any) => {
           const details = await actions.order.capture();
+          // TODO: send details.id to your backend/email for fulfillment
           alert("Thanks! Payment ID: " + details.id);
+          // Clear cart after success
           setLines([]);
           saveCart([]);
           onClose();
@@ -555,8 +640,7 @@ function CartDrawer({
               <div className="flex-1 min-w-0">
                 <div className="font-medium truncate">{product.name}</div>
                 <div className="text-sm text-slate-500">
-                  {product.priceLabel ||
-                    (product.priceCents != null ? formatCents(product.priceCents) : "Price TBD")}
+                  {product.priceLabel || (product.priceCents != null ? formatCents(product.priceCents) : "Price TBD")}
                 </div>
                 <div className="mt-2 flex items-center gap-2">
                   <label className="text-xs text-slate-500">Qty</label>
@@ -583,7 +667,7 @@ function CartDrawer({
           </div>
           {hasMixed && (
             <p className="text-xs text-amber-700 bg-amber-50 border border-amber-200 rounded p-2">
-              Checkout supports one item type at a time. Please remove extra items.
+              Stripe/PayPal checkout supports one item type at a time. Please remove extra items.
             </p>
           )}
           {!canCheckout && items.length === 1 && (
@@ -605,12 +689,12 @@ function CartDrawer({
 
             {/* PayPal + Venmo Buttons mount here (only when one item + subtotal) */}
             <div id={paypalContainerId} className="w-full" />
-            <p className="text-[11px] text-slate-500">PayPal also shows Venmo for eligible U.S. buyers.</p>
+            <p className="text-[11px] text-slate-500">
+              PayPal also shows Venmo for eligible U.S. buyers.
+            </p>
           </div>
 
-          <p className="text-[11px] text-slate-500 mt-1">
-            By checking out you agree to our Safety & Legal terms. Taxes & shipping calculated at checkout.
-          </p>
+          <p className="text-[11px] text-slate-500 mt-1">By checking out you agree to our Safety & Legal terms. Taxes & shipping calculated at checkout.</p>
         </div>
       </aside>
     </div>
@@ -619,6 +703,7 @@ function CartDrawer({
 
 /* -------------------- MAIN PAGE -------------------- */
 function ToonTailLanding() {
+  // Estimator inputs (three sliders)
   const [estimator, setEstimator] = useState({ speedMph: 30, horsepower: 350, trimDeg: 10 });
   const [cartOpen, setCartOpen] = useState(false);
   const [lines, setLines] = useState<CartLine[]>([]);
@@ -633,15 +718,20 @@ function ToonTailLanding() {
     const trim = Math.max(0, Math.min(20, estimator.trimDeg));
 
     // Calibrated math: 30 mph, 350 hp, 10° → ~35 ft / ~110 ft
-    const H_BASE = 35, D_BASE = 110;
-    const ALPHA_H = 0.7, BETA_H = 0.25, TRIM_H = 0.04;
-    const ALPHA_D = 1.0, BETA_D = 0.2, TRIM_D = -0.015;
+    const H_BASE = 35,
+      D_BASE = 110;
+    const ALPHA_H = 0.7,
+      BETA_H = 0.25,
+      TRIM_H = 0.04;
+    const ALPHA_D = 1.0,
+      BETA_D = 0.2,
+      TRIM_D = -0.015;
 
     const hTrim = Math.max(0.2, 1 + TRIM_H * (trim - 10));
     const dTrim = Math.max(0.2, 1 + TRIM_D * (trim - 10));
 
     const height = H_BASE * Math.pow(v / 30, ALPHA_H) * Math.pow(hp / 350, BETA_H) * hTrim;
-    const dist   = D_BASE * Math.pow(v / 30, ALPHA_D) * Math.pow(hp / 350, BETA_D) * dTrim;
+    const dist = D_BASE * Math.pow(v / 30, ALPHA_D) * Math.pow(hp / 350, BETA_D) * dTrim;
 
     return {
       heightFt: Math.round(Math.min(60, Math.max(0, height))),
@@ -649,10 +739,33 @@ function ToonTailLanding() {
     };
   }, [estimator]);
 
+  function addToCart(p: Product) {
+    if (lines.length > 0 && lines[0].productId !== p.id) {
+      // enforce single-SKU cart for Payment Links checkout
+      const single = [{ productId: p.id, qty: 1 }];
+      setLines(single);
+      saveCart(single);
+      setCartOpen(true);
+      return;
+    }
+    const existing = lines.find((l) => l.productId === p.id);
+    let next: CartLine[];
+    if (existing) {
+      next = lines.map((l) => (l.productId === p.id ? { ...l, qty: l.qty + 1 } : l));
+    } else {
+      next = [...lines, { productId: p.id, qty: 1 }];
+    }
+    setLines(next);
+    saveCart(next);
+    setCartOpen(true);
+  }
+
   return (
     <div className="relative min-h-screen bg-gradient-to-b from-sky-50 via-white to-white text-slate-900">
+      {/* background watermark */}
       <Watermark />
 
+      {/* content above watermark */}
       <div className="relative z-10">
         <Nav onOpenCart={() => setCartOpen(true)} />
         <Hero onCtaClick={() => document.getElementById("estimator")?.scrollIntoView({ behavior: "smooth" })} />
@@ -664,28 +777,43 @@ function ToonTailLanding() {
           </p>
         </Section>
 
-        <Shop onAdd={(p) => {
-          // enforce single-SKU cart
-          setLines([{ productId: p.id, qty: 1 }]);
-          saveCart([{ productId: p.id, qty: 1 }]);
-          setCartOpen(true);
-        }} />
+        <Shop onAdd={addToCart} />
 
         <Section id="estimator" title="Tail estimator (beta)" eyebrow="Dial it in">
           <div className="grid md:grid-cols-2 gap-6 items-start">
+            {/* Controls */}
             <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-              <SliderRow label="Boat speed" unit="mph" min={10} max={60} step={1}
+              <SliderRow
+                label="Boat speed"
+                unit="mph"
+                min={10}
+                max={60}
+                step={1}
                 value={estimator.speedMph}
-                onChange={(v) => setEstimator((s:any) => ({ ...s, speedMph: v }))}/>
-              <SliderRow label="Horsepower" unit="hp" min={90} max={450} step={10}
+                onChange={(v) => setEstimator((s: any) => ({ ...s, speedMph: v }))}
+              />
+              <SliderRow
+                label="Horsepower"
+                unit="hp"
+                min={90}
+                max={450}
+                step={10}
                 value={estimator.horsepower}
-                onChange={(v) => setEstimator((s:any) => ({ ...s, horsepower: v }))}/>
-              <SliderRow label="Motor trim" unit="°" min={0} max={15} step={1}
+                onChange={(v) => setEstimator((s: any) => ({ ...s, horsepower: v }))}
+              />
+              <SliderRow
+                label="Motor trim"
+                unit="°"
+                min={0}
+                max={15}
+                step={1}
                 value={estimator.trimDeg}
-                onChange={(v) => setEstimator((s:any) => ({ ...s, trimDeg: v }))}/>
+                onChange={(v) => setEstimator((s: any) => ({ ...s, trimDeg: v }))}
+              />
               <p className="text-xs text-slate-500 mt-3">Performance may vary due to pontoon size, prop size, weight and motor depth.</p>
             </div>
 
+            {/* Readout */}
             <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
               <div className="grid gap-3">
                 <Metric label="Estimated tail height" value={`${estimation.heightFt} ft`} />
@@ -736,7 +864,9 @@ function ToonTailLanding() {
 
         <Section id="cta" title="Join the waitlist" eyebrow="Get updates first">
           <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-            <p className="text-slate-700">Email <a className="underline" href="mailto:info@toontail.com">info@toontail.com</a> to join the Founder’s run.</p>
+            <p className="text-slate-700">
+              Email <a className="underline" href="mailto:info@toontail.com">info@toontail.com</a> to join the Founder’s run.
+            </p>
           </div>
         </Section>
 
@@ -758,7 +888,7 @@ function HeroVideo() {
     <div>
       <div className="flex items-center gap-2 mb-2">
         <span className="text-xs uppercase tracking-wide text-slate-500">Toggle:</span>
-        {(["before","after"] as const).map((k) => (
+        {(["before", "after"] as const).map((k) => (
           <button
             key={k}
             onClick={() => setWhich(k)}
@@ -782,8 +912,8 @@ function HeroVideo() {
             playsInline
             preload="metadata"
           >
-            <source src={src.replace(".mov",".mp4")} type="video/mp4" />
-            <source src={src.replace(".mp4",".mov")} type="video/quicktime" />
+            <source src={src.replace(".mov", ".mp4")} type="video/mp4" />
+            <source src={src.replace(".mp4", ".mov")} type="video/quicktime" />
           </video>
         </div>
       </div>
