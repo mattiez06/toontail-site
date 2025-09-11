@@ -50,13 +50,13 @@ export type Product = {
 const PRODUCTS: Product[] = [
   {
     id: "tt-mercury-250-350",
-    name: "ToonTail for Mercury 250–400 HP",
+    name: "ToonTail for Mercury 250-400 HP",
     subtitle: "Verado & compatible models (pontoon/tritoon)",
     status: "in_stock",
     priceCents: 39999,
     compareAtCents: 49999,
     saleLabel: "Founders Run",
-    // ⬇️ Paste your real Stripe Payment Link here
+    // Paste your real Stripe Payment Link:
     paymentLink: "https://buy.stripe.com/REPLACE_WITH_YOUR_LINK",
     img: PRODUCT_IMAGE_DEFAULT,
   },
@@ -66,7 +66,6 @@ const PRODUCTS: Product[] = [
     subtitle: "Black/mesh snapback, embroidered TT mark",
     status: "in_stock",
     priceCents: 3999, // $39.99
-    // Optional: Stripe Payment Link for the hat
     paymentLink: "https://buy.stripe.com/REPLACE_WITH_HAT_LINK",
     img: MERCH.hat,
   },
@@ -76,28 +75,28 @@ const PRODUCTS: Product[] = [
     subtitle: "Unisex tee, front TT logo, back 'Got Tail ?'",
     status: "in_stock",
     priceCents: 2999, // $29.99
-    // Optional: Stripe Payment Link for the tee
     paymentLink: "https://buy.stripe.com/REPLACE_WITH_TEE_LINK",
     img: MERCH.tee,
   },
   {
     id: "tt-yamaha-90-150",
-    name: "ToonTail Mini — Yamaha 90–150 HP",
-    subtitle: "Prototype — join waitlist",
+    name: "ToonTail Mini - Yamaha 90-150 HP",
+    subtitle: "Prototype - join waitlist",
     status: "coming_soon",
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
     id: "tt-yamaha-225-425",
-    name: "ToonTail Magnum — Yamaha 225–425 HP",
-    subtitle: "Prototype — join waitlist",
+    name: "ToonTail Magnum - Yamaha 225-425 HP",
+    subtitle: "Prototype - join waitlist",
     status: "coming_soon",
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
-  id: "tt-mercury-90-150",
-  name: "ToonTail Mini — Mercury 90–150 HP",
-  subtitle: "Prototype — join waitlist",
-  status: "coming_soon",
-  img: PRODUCT_IMAGE_DEFAULT,
-},
+    id: "tt-mercury-90-150",
+    name: "ToonTail Mini - Mercury 90-150 HP",
+    subtitle: "Prototype - join waitlist",
+    status: "coming_soon",
+    img: PRODUCT_IMAGE_DEFAULT,
+  },
+];
