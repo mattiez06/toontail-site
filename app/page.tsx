@@ -15,8 +15,8 @@ const MEDIA = {
 };
 
 const EXTRAS = [
-  "/media/Alt10.jpg",
-  "/media/Alt11.jpg",
+  "/media/alt10.jpg",
+  "/media/alt11.jpg",
   "/media/Alt3.jpeg",
   "/media/Device_Closeup.JPG",
   "/media/With_ToonTail.jpeg",
