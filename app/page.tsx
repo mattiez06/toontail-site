@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
-
+import { motion } from "framer-motion";
 /* -------------------- MEDIA -------------------- */
 const MEDIA = {
   videoBefore: "/media/toontail-before.mp4?v=8",
