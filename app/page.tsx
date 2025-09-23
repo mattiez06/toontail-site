@@ -767,6 +767,16 @@ function ToonTailLanding(): JSX.Element {
             ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount of thrust from the prop and
             redirects it through a tuned, efficient outlet to create a clean, dramatic rooster tail — without sacrificing performance. Got tail? Get ToonTail!
           </p>
+             <div className="relative z-10">
+        <Nav onOpenCart={() => setCartOpen(true)} />
+        <Hero onCtaClick={() => document.getElementById("estimator")?.scrollIntoView({ behavior: "smooth" })} />
+
+        <Section id="how" title="What is ToonTail?" eyebrow="Turn wake into wow">
+          <p className="text-lg md:text-xl max-w-3xl">
+            ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount
+            of thrust from the prop and redirects it through a tuned, efficient outlet to create a clean, dramatic rooster
+            tail — without sacrificing performance. Got tail? Get ToonTail!
+          </p>
         </Section>
 
         <Shop onAdd={addToCart} />
@@ -774,10 +784,36 @@ function ToonTailLanding(): JSX.Element {
         <Section id="estimator" title="Tail estimator (beta)" eyebrow="Dial it in">
           <div className="grid md:grid-cols-2 gap-6 items-start">
             <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-              <SliderRow label="Boat speed" unit="mph" min={10} max={60} step={1} value={estimator.speedMph} onChange={(v) => setEstimator((s) => ({ ...s, speedMph: v }))} />
-              <SliderRow label="Horsepower" unit="hp" min={90} max={450} step={10} value={estimator.horsepower} onChange={(v) => setEstimator((s) => ({ ...s, horsepower: v }))} />
-              <SliderRow label="Motor trim" unit="°" min={0} max={15} step={1} value={estimator.trimDeg} onChange={(v) => setEstimator((s) => ({ ...s, trimDeg: v }))} />
-              <p className="text-xs text-slate-500 mt-3">Performance may vary due to pontoon size, prop size, weight and motor depth.</p>
+              <SliderRow
+                label="Boat speed"
+                unit="mph"
+                min={10}
+                max={60}
+                step={1}
+                value={estimator.speedMph}
+                onChange={(v) => setEstimator((s) => ({ ...s, speedMph: v }))}
+              />
+              <SliderRow
+                label="Horsepower"
+                unit="hp"
+                min={90}
+                max={450}
+                step={10}
+                value={estimator.horsepower}
+                onChange={(v) => setEstimator((s) => ({ ...s, horsepower: v }))}
+              />
+              <SliderRow
+                label="Motor trim"
+                unit="°"
+                min={0}
+                max={15}
+                step={1}
+                value={estimator.trimDeg}
+                onChange={(v) => setEstimator((s) => ({ ...s, trimDeg: v }))}
+              />
+              <p className="text-xs text-slate-500 mt-3">
+                Performance may vary due to pontoon size, prop size, weight and motor depth.
+              </p>
             </div>
 
             <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
@@ -792,15 +828,21 @@ function ToonTailLanding(): JSX.Element {
           </div>
         </Section>
 
-       function HeroVideoGallery() {
-  const videos = [
-    "/media/toontail-alt1.mp4",
-    "/media/toontail-alt2.mp4",
-    "/media/toontail-alt3.mp4",
-  ];
-  const [current, setCurrent] = useState(0);
+        <Section id="gallery" title="Before and After Slider">
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Card>
+              <h3 className="text-lg font-semibold">Photo — Before / After</h3>
+              <p className="text-slate-600 text-sm mb-3">Drag the slider to compare.</p>
+              <BeforeAfter beforeSrc={MEDIA.photoBefore} afterSrc={MEDIA.photoAfter} />
+            </Card>
 
-  return (
+            <Card>
+              <h3 className="text-lg font-semibold">Hero videos</h3>
+              <HeroVideoGallery />
+            </Card>
+          </div>
+        </Section>
+
     <div>
       <video
         key={videos[current]}
