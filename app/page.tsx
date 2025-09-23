@@ -711,7 +711,7 @@ function CartDrawer({
 }
 
 /* -------------------- MAIN PAGE -------------------- */
-function ToonTailLanding() {
+function ToonTailLanding(): JSX.Element {
   const [estimator, setEstimator] = useState({ speedMph: 30, horsepower: 350, trimDeg: 10 });
   const [cartOpen, setCartOpen] = useState(false);
   const [lines, setLines] = useState<CartLine[]>([]);
