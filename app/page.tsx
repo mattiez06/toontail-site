@@ -225,7 +225,17 @@ function SliderRow({
   );
 }
 
-function MiniChart({ height, distance }: { height: number; distance: number }) {
+import React, { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
+
+export default function MiniChart({
+  height,
+  distance,
+}: {
+  height: number;
+  distance: number;
+}) {
+  // same canvas sizing as your original
   const H_MIN = 0,
     H_MAX = 60;
   const D_MIN = 0,
@@ -234,18 +244,63 @@ function MiniChart({ height, distance }: { height: number; distance: number }) {
     h = 160,
     pad = 20;
 
+  // clamp inputs
   const hC = Math.max(H_MIN, Math.min(H_MAX, height));
   const dC = Math.max(D_MIN, Math.min(D_MAX, distance));
 
+  // map inputs to SVG coords (keep your original logic)
   const x = pad + ((dC - D_MIN) / (D_MAX - D_MIN)) * (w - pad * 2);
-  const y = h - pad - ((hC - H_MIN) / (H_MAX - H_MIN)) * (h - pad * 2);
+  const y =
+    h - pad - ((hC - H_MIN) / (H_MAX - H_MIN)) * (h - pad * 2);
 
-  const x0 = pad,
-    y0 = h - pad;
+  // baseline origin at bottom-left
+  const x0 = pad;
+  const y0 = h - pad;
+
+  // control point similar to your original but we’ll keep it stable
   const cx = x0 + (x - x0) / 2;
   const cy = y - 40 * (hC / (H_MAX || 1)) + 20;
+
+  // stroke width scales with height like before
   const strokeW = 4 + 4 * (hC / (H_MAX || 1));
-  const path = `M ${x0} ${y0} Q ${cx} ${cy}, ${x} ${y}`;
+
+  // paths
+  const baselinePath = useMemo(
+    () => `M ${x0} ${y0} L ${Math.max(x0 + 6, x)} ${y0}`,
+    [x0, y0, x]
+  );
+
+  const arcPath = useMemo(
+    () => `M ${x0} ${y0} Q ${cx} ${cy}, ${x} ${y}`,
+    [x0, y0, cx, cy, x, y]
+  );
+
+  // animate: reset to baseline, then rise to arc
+  const [dAttr, setDAttr] = useState(baselinePath);
+  const [animKey, setAnimKey] = useState(0);
+
+  useEffect(() => {
+    const nearZero =
+      hC <= 0.001 || dC <= 0.001;
+
+    if (nearZero) {
+      // fall back and stay on baseline
+      setDAttr(baselinePath);
+      setAnimKey((k) => k + 1);
+      return;
+    }
+
+    // 1) snap to baseline so it always starts from bottom
+    setDAttr(baselinePath);
+
+    // 2) next tick: animate up to arc
+    const t = setTimeout(() => {
+      setDAttr(arcPath);
+      setAnimKey((k) => k + 1);
+    }, 16);
+
+    return () => clearTimeout(t);
+  }, [baselinePath, arcPath, hC, dC]);
 
   return (
     <svg viewBox={`0 0 ${w} ${h}`} className="w-full h-40">
@@ -255,16 +310,37 @@ function MiniChart({ height, distance }: { height: number; distance: number }) {
           <stop offset="100%" stopColor="#6366f1" />
         </linearGradient>
       </defs>
+
+      {/* background + bottom bar (same look you had) */}
       <rect x="0" y="0" width={w} height={h} fill="#f8fafc" />
       <rect x="0" y={h - 12} width={w} height={12} fill="#94a3b8" opacity="0.3" />
-      <path d={path} stroke="url(#jet)" strokeWidth={strokeW} fill="none" />
-      <circle cx={x} cy={y} r="4" fill="#0ea5e9" />
+
+      {/* subtle baseline guide */}
+      <line x1={x0} y1={y0} x2={w - pad} y2={y0} stroke="#94a3b8" opacity="0.25" strokeWidth="1" />
+
+      {/* animated arc that always rises from bottom */}
+      <motion.path
+        key={animKey}
+        d={dAttr}
+        fill="none"
+        stroke="url(#jet)"
+        strokeWidth={strokeW}
+        initial={{ pathLength: 0, opacity: 0.95 }}
+        animate={{ pathLength: 1, opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeInOut" }}
+      />
+
+      {/* nozzle and tip dots (optional but nice) */}
+      <circle cx={x0} cy={y0} r="3" fill="#0ea5e9" opacity="0.7" />
+      <circle cx={x} cy={y0} r="3" fill="#0ea5e9" opacity="0.4" />
+
       <text x="10" y="14" fontSize="10" fill="#334155">
-        Tail arc (illustrative)
+        Tail arc (animated)
       </text>
     </svg>
   );
 }
+
 
 function BeforeAfter({
   beforeSrc,
