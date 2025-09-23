@@ -49,11 +49,11 @@ type Product = {
 
 const PRODUCTS: Product[] = [
   {
-    id: "tt-mercury-250-350",
-    name: "ToonTail for Mercury 250-400 HP",
+    id: "tt-mercury-300-350-400 verado",
+    name: "ToonTail for Mercury 300-350-400 HP verado",
     subtitle: "Verado & compatible models (pontoon/tritoon)",
     status: "in_stock",
-    priceCents: 39999,
+    priceCents: 29999,
     compareAtCents: 49999,
     saleLabel: "Founders Run",
     // ⬇️ Replace with your live Stripe Payment Link
