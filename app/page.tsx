@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 /* -------------------- MEDIA -------------------- */
 const MEDIA = {
   videoBefore: "/media/toontail-before.mp4?v=8",
-  videoAfter: "/media/toontail-after.mp4?v=8",
+  videoAfter: "/media/toontail-alt3.mp4?v=8",
   posterBefore: "/media/toontail-before.jpg?v=8",
   posterAfter: "/media/toontail-after.jpg?v=8",
   photoBefore: "/media/Without_ToonTail.jpeg?v=8",
