@@ -792,19 +792,39 @@ function ToonTailLanding(): JSX.Element {
           </div>
         </Section>
 
-        <Section id="gallery" title="Before and After Slider">
-          <div className="grid lg:grid-cols-2 gap-6">
-            <Card>
-              <h3 className="text-lg font-semibold">Photo — Before / After</h3>
-              <p className="text-slate-600 text-sm mb-3">Drag the slider to compare.</p>
-              <BeforeAfter beforeSrc={MEDIA.photoBefore} afterSrc={MEDIA.photoAfter} />
-            </Card>
-            <Card>
-              <h3 className="text-lg font-semibold">Hero video</h3>
-              <HeroVideo />
-            </Card>
-          </div>
-        </Section>
+       function HeroVideoGallery() {
+  const videos = [
+    "/media/toontail-alt1.mp4",
+    "/media/toontail-alt2.mp4",
+    "/media/toontail-alt3.mp4",
+  ];
+  const [current, setCurrent] = useState(0);
+
+  return (
+    <div>
+      <video
+        key={videos[current]}
+        src={videos[current]}
+        className="w-full rounded-2xl border rounded-xl"
+        controls
+        muted
+        playsInline
+      />
+      <div className="flex justify-center gap-2 mt-2">
+        {videos.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            className={`w-3 h-3 rounded-full ${
+              current === i ? "bg-sky-600" : "bg-slate-300"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 
         <Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
