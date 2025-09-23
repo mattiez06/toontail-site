@@ -2,6 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
+
 /* -------------------- MEDIA -------------------- */
 const MEDIA = {
   videoBefore: "/media/toontail-before.mp4?v=8",
@@ -225,71 +226,43 @@ function SliderRow({
   );
 }
 
+/* -------------------- MINI CHART -------------------- */
 function MiniChart({ height, distance }: { height: number; distance: number }) {
-  // same canvas sizing as your original
-  const H_MIN = 0,
-    H_MAX = 60;
-  const D_MIN = 0,
-    D_MAX = 300;
-  const w = 340,
-    h = 160,
-    pad = 20;
+  const H_MIN = 0, H_MAX = 60;
+  const D_MIN = 0, D_MAX = 300;
+  const w = 340, h = 160, pad = 20;
 
-  // clamp inputs
   const hC = Math.max(H_MIN, Math.min(H_MAX, height));
   const dC = Math.max(D_MIN, Math.min(D_MAX, distance));
 
-  // map inputs to SVG coords (keep your original logic)
   const x = pad + ((dC - D_MIN) / (D_MAX - D_MIN)) * (w - pad * 2);
-  const y =
-    h - pad - ((hC - H_MIN) / (H_MAX - H_MIN)) * (h - pad * 2);
+  const y = h - pad - ((hC - H_MIN) / (H_MAX - H_MIN)) * (h - pad * 2);
 
-  // baseline origin at bottom-left
-  const x0 = pad;
-  const y0 = h - pad;
+  const x0 = pad, y0 = h - pad;
 
-  // control point similar to your original but we’ll keep it stable
   const cx = x0 + (x - x0) / 2;
   const cy = y - 40 * (hC / (H_MAX || 1)) + 20;
 
-  // stroke width scales with height like before
   const strokeW = 4 + 4 * (hC / (H_MAX || 1));
 
-  // paths
-  const baselinePath = useMemo(
-    () => `M ${x0} ${y0} L ${Math.max(x0 + 6, x)} ${y0}`,
-    [x0, y0, x]
-  );
+  const baselinePath = useMemo(() => `M ${x0} ${y0} L ${Math.max(x0 + 6, x)} ${y0}`, [x0, y0, x]);
+  const arcPath = useMemo(() => `M ${x0} ${y0} Q ${cx} ${cy}, ${x} ${y}`, [x0, y0, cx, cy, x, y]);
 
-  const arcPath = useMemo(
-    () => `M ${x0} ${y0} Q ${cx} ${cy}, ${x} ${y}`,
-    [x0, y0, cx, cy, x, y]
-  );
-
-  // animate: reset to baseline, then rise to arc
   const [dAttr, setDAttr] = useState(baselinePath);
   const [animKey, setAnimKey] = useState(0);
 
   useEffect(() => {
-    const nearZero =
-      hC <= 0.001 || dC <= 0.001;
-
+    const nearZero = hC <= 0.001 || dC <= 0.001;
     if (nearZero) {
-      // fall back and stay on baseline
       setDAttr(baselinePath);
       setAnimKey((k) => k + 1);
       return;
     }
-
-    // 1) snap to baseline so it always starts from bottom
     setDAttr(baselinePath);
-
-    // 2) next tick: animate up to arc
     const t = setTimeout(() => {
       setDAttr(arcPath);
       setAnimKey((k) => k + 1);
     }, 16);
-
     return () => clearTimeout(t);
   }, [baselinePath, arcPath, hC, dC]);
 
@@ -302,14 +275,10 @@ function MiniChart({ height, distance }: { height: number; distance: number }) {
         </linearGradient>
       </defs>
 
-      {/* background + bottom bar (same look you had) */}
       <rect x="0" y="0" width={w} height={h} fill="#f8fafc" />
       <rect x="0" y={h - 12} width={w} height={12} fill="#94a3b8" opacity="0.3" />
-
-      {/* subtle baseline guide */}
       <line x1={x0} y1={y0} x2={w - pad} y2={y0} stroke="#94a3b8" opacity="0.25" strokeWidth="1" />
 
-      {/* animated arc that always rises from bottom */}
       <motion.path
         key={animKey}
         d={dAttr}
@@ -321,18 +290,15 @@ function MiniChart({ height, distance }: { height: number; distance: number }) {
         transition={{ duration: 0.6, ease: "easeInOut" }}
       />
 
-      {/* nozzle and tip dots (optional but nice) */}
       <circle cx={x0} cy={y0} r="3" fill="#0ea5e9" opacity="0.7" />
       <circle cx={x} cy={y0} r="3" fill="#0ea5e9" opacity="0.4" />
 
-      <text x="10" y="14" fontSize="10" fill="#334155">
-        Tail arc (animated)
-      </text>
+      <text x="10" y="14" fontSize="10" fill="#334155">Tail arc (animated)</text>
     </svg>
   );
 }
 
-
+/* -------------------- BEFORE/AFTER -------------------- */
 function BeforeAfter({
   beforeSrc,
   afterSrc,
@@ -568,8 +534,7 @@ function CartDrawer({
       return;
     }
 
-    // Stripe Payment Link: direct redirect (Stripe page has qty controls)
-    window.location.href = product.paymentLink;
+    window.location.href = product.paymentLink; // Stripe Payment Link
   }
 
   // PayPal + Venmo
@@ -701,6 +666,48 @@ function CartDrawer({
   );
 }
 
+/* -------------------- VIDEO GALLERY (SECOND CARD) -------------------- */
+function HeroVideoGallery() {
+  const videos = [
+    "/media/toontail-alt1.mp4",
+    "/media/toontail-alt2.mp4",
+    "/media/toontail-alt3.mp4",
+  ];
+  const [current, setCurrent] = useState(0);
+
+  return (
+    <div>
+      <div className="rounded-2xl overflow-hidden border">
+        <div className="relative aspect-[16/9] w-full bg-black">
+          <video
+            key={videos[current]}
+            className="absolute inset-0 h-full w-full object-contain"
+            controls
+            muted
+            playsInline
+            preload="metadata"
+          >
+            <source src={videos[current]} type="video/mp4" />
+          </video>
+        </div>
+      </div>
+
+      <div className="flex justify-center gap-2 mt-3">
+        {videos.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrent(i)}
+            aria-label={`Show video ${i + 1}`}
+            className={`w-3 h-3 rounded-full transition ${
+              current === i ? "bg-sky-600" : "bg-slate-300 hover:bg-slate-400"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* -------------------- MAIN PAGE -------------------- */
 function ToonTailLanding(): JSX.Element {
   const [estimator, setEstimator] = useState({ speedMph: 30, horsepower: 350, trimDeg: 10 });
@@ -716,14 +723,9 @@ function ToonTailLanding(): JSX.Element {
     const hp = Math.max(50, estimator.horsepower);
     const trim = Math.max(0, Math.min(20, estimator.trimDeg));
 
-    const H_BASE = 35,
-      D_BASE = 110;
-    const ALPHA_H = 0.7,
-      BETA_H = 0.25,
-      TRIM_H = 0.04;
-    const ALPHA_D = 1.0,
-      BETA_D = 0.2,
-      TRIM_D = -0.015;
+    const H_BASE = 35, D_BASE = 110;
+    const ALPHA_H = 0.7, BETA_H = 0.25, TRIM_H = 0.04;
+    const ALPHA_D = 1.0, BETA_D = 0.2, TRIM_D = -0.015;
 
     const hTrim = Math.max(0.2, 1 + TRIM_H * (trim - 10));
     const dTrim = Math.max(0.2, 1 + TRIM_D * (trim - 10));
@@ -767,16 +769,6 @@ function ToonTailLanding(): JSX.Element {
             ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount of thrust from the prop and
             redirects it through a tuned, efficient outlet to create a clean, dramatic rooster tail — without sacrificing performance. Got tail? Get ToonTail!
           </p>
-             <div className="relative z-10">
-        <Nav onOpenCart={() => setCartOpen(true)} />
-        <Hero onCtaClick={() => document.getElementById("estimator")?.scrollIntoView({ behavior: "smooth" })} />
-
-        <Section id="how" title="What is ToonTail?" eyebrow="Turn wake into wow">
-          <p className="text-lg md:text-xl max-w-3xl">
-            ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount
-            of thrust from the prop and redirects it through a tuned, efficient outlet to create a clean, dramatic rooster
-            tail — without sacrificing performance. Got tail? Get ToonTail!
-          </p>
         </Section>
 
         <Shop onAdd={addToCart} />
@@ -784,36 +776,10 @@ function ToonTailLanding(): JSX.Element {
         <Section id="estimator" title="Tail estimator (beta)" eyebrow="Dial it in">
           <div className="grid md:grid-cols-2 gap-6 items-start">
             <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
-              <SliderRow
-                label="Boat speed"
-                unit="mph"
-                min={10}
-                max={60}
-                step={1}
-                value={estimator.speedMph}
-                onChange={(v) => setEstimator((s) => ({ ...s, speedMph: v }))}
-              />
-              <SliderRow
-                label="Horsepower"
-                unit="hp"
-                min={90}
-                max={450}
-                step={10}
-                value={estimator.horsepower}
-                onChange={(v) => setEstimator((s) => ({ ...s, horsepower: v }))}
-              />
-              <SliderRow
-                label="Motor trim"
-                unit="°"
-                min={0}
-                max={15}
-                step={1}
-                value={estimator.trimDeg}
-                onChange={(v) => setEstimator((s) => ({ ...s, trimDeg: v }))}
-              />
-              <p className="text-xs text-slate-500 mt-3">
-                Performance may vary due to pontoon size, prop size, weight and motor depth.
-              </p>
+              <SliderRow label="Boat speed" unit="mph" min={10} max={60} step={1} value={estimator.speedMph} onChange={(v) => setEstimator((s) => ({ ...s, speedMph: v }))} />
+              <SliderRow label="Horsepower" unit="hp" min={90} max={450} step={10} value={estimator.horsepower} onChange={(v) => setEstimator((s) => ({ ...s, horsepower: v }))} />
+              <SliderRow label="Motor trim" unit="°" min={0} max={15} step={1} value={estimator.trimDeg} onChange={(v) => setEstimator((s) => ({ ...s, trimDeg: v }))} />
+              <p className="text-xs text-slate-500 mt-3">Performance may vary due to pontoon size, prop size, weight and motor depth.</p>
             </div>
 
             <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
@@ -842,31 +808,6 @@ function ToonTailLanding(): JSX.Element {
             </Card>
           </div>
         </Section>
-
-    <div>
-      <video
-        key={videos[current]}
-        src={videos[current]}
-        className="w-full rounded-2xl border rounded-xl"
-        controls
-        muted
-        playsInline
-      />
-      <div className="flex justify-center gap-2 mt-2">
-        {videos.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => setCurrent(i)}
-            className={`w-3 h-3 rounded-full ${
-              current === i ? "bg-sky-600" : "bg-slate-300"
-            }`}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
 
         <Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
@@ -902,46 +843,6 @@ function ToonTailLanding(): JSX.Element {
       </div>
 
       <CartDrawer open={cartOpen} onClose={() => setCartOpen(false)} lines={lines} setLines={setLines} />
-    </div>
-  );
-}
-
-/* -------------------- VIDEO CARD (SECONDARY) -------------------- */
-function HeroVideo() {
-  const [which, setWhich] = useState<"before" | "after">("after");
-  const src = which === "after" ? MEDIA.videoAfter : MEDIA.videoBefore;
-
-  return (
-    <div>
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-xs uppercase tracking-wide text-slate-500">Toggle:</span>
-        {(["before", "after"] as const).map((k) => (
-          <button
-            key={k}
-            onClick={() => setWhich(k)}
-            className={`px-3 py-1 rounded-full text-xs font-semibold border ${which === k ? "bg-slate-900 text-white border-slate-900" : "bg-white text-slate-700 border-slate-300 hover:border-slate-400"}`}
-          >
-            {k.toUpperCase()}
-          </button>
-        ))}
-      </div>
-      <div className="rounded-2xl overflow-hidden border">
-        <div className="relative aspect-[16/9] w-full bg-black">
-          <video
-            key={src}
-            poster={which === "after" ? MEDIA.posterAfter : MEDIA.posterBefore}
-            className="absolute inset-0 h-full w-full object-contain"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="metadata"
-          >
-            <source src={src.replace(".mov", ".mp4")} type="video/mp4" />
-            <source src={src.replace(".mp4", ".mov")} type="video/quicktime" />
-          </video>
-        </div>
-      </div>
     </div>
   );
 }
