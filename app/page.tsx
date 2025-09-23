@@ -225,13 +225,7 @@ function SliderRow({
   );
 }
 
-export default function MiniChart({
-  height,
-  distance,
-}: {
-  height: number;
-  distance: number;
-}) {
+function MiniChart({ height, distance }: { height: number; distance: number }) {
   // same canvas sizing as your original
   const H_MIN = 0,
     H_MAX = 60;
