@@ -81,6 +81,13 @@ const PRODUCTS: Product[] = [
     status: "coming_soon",
     img: PRODUCT_IMAGE_DEFAULT,
   },
+   {
+    id: "tt-Mercury 150hp 150hp Pro XS 3.0L ",
+    name: "Toon Tail for Mercury 150hp 150hp Pro XS 3.0L",
+    subtitle: "2011 - Current Models with 4.9 Gearcase",
+    status: "coming_soon",
+    img: PRODUCT_IMAGE_DEFAULT,
+  },
   {
     id: "tt-trucker-hat",
     name: "ToonTail Trucker Hat — 'Got Tail ?'",
