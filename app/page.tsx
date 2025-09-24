@@ -89,6 +89,20 @@ const PRODUCTS: Product[] = [
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
+    id: "tt-Yamaha 115hp - 175hp",
+    name: "Toon Tail for Yamaha 115hp 150hp 175hp ",
+    subtitle: "2014 - Current Models with 4.75 Gearcase",
+    status: "coming_soon",
+    img: PRODUCT_IMAGE_DEFAULT,
+  },
+  {
+    id: "tt-Yamaha 225hp - 300hp",
+    name: "Toon Tail for Yamaha 225hp 250hp 300hp ",
+    subtitle: "2014 - Current Models with 4.75 Gearcase",
+    status: "coming_soon",
+    img: PRODUCT_IMAGE_DEFAULT,
+  },
+  {
     id: "tt-trucker-hat",
     name: "ToonTail Trucker Hat — 'Got Tail ?'",
     subtitle: "Black/mesh snapback, embroidered TT mark",
