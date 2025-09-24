@@ -363,23 +363,78 @@ function Nav({ onOpenCart }: { onOpenCart: () => void }) {
   return (
     <header className="sticky top-0 z-40 backdrop-blur bg-white/60 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+        {/* Left: Logo */}
         <div className="flex items-center gap-3">
           <Logo className="h-8 w-8" />
           <span className="font-bold tracking-wide">ToonTail</span>
         </div>
+
+        {/* Right: Nav links + socials */}
         <nav className="hidden md:flex items-center gap-6 text-sm text-slate-700">
           <a href="#shop" className="hover:text-slate-900">Shop</a>
           <a href="#estimator" className="hover:text-slate-900">Estimator</a>
           <a href="#more-angles" className="hover:text-slate-900">More angles</a>
           <a href="#faq" className="hover:text-slate-900">FAQ</a>
-          <button onClick={onOpenCart} className="px-3 py-2 rounded-xl border border-slate-300 hover:border-slate-400">Cart</button>
-          <a href="#cta" className="px-3 py-2 rounded-2xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700">Join waitlist</a>
+          <button
+            onClick={onOpenCart}
+            className="px-3 py-2 rounded-xl border border-slate-300 hover:border-slate-400"
+          >
+            Cart
+          </button>
+          <a
+            href="#cta"
+            className="px-3 py-2 rounded-2xl bg-sky-600 text-white font-medium shadow hover:bg-sky-700"
+          >
+            Join waitlist
+          </a>
+
+          {/* Social icons */}
+          <div className="flex items-center gap-4 ml-4">
+            {/* Instagram */}
+            <a
+              href="https://instagram.com/ToonTail_"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="ToonTail on Instagram"
+            >
+              <img
+                src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg"
+                alt="Instagram"
+                className="h-5 w-5 hover:scale-110 transition-transform"
+              />
+            </a>
+
+            {/* YouTube */}
+            <a
+              href="https://youtube.com/@ToonTail"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="ToonTail on YouTube"
+            >
+              <img
+                src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/youtube.svg"
+                alt="YouTube"
+                className="h-5 w-5 hover:scale-110 transition-transform"
+              />
+            </a>
+
+            {/* Facebook placeholder */}
+            <span
+              className="opacity-40 cursor-not-allowed"
+              title="Facebook (coming soon)"
+            >
+              <img
+                src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg"
+                alt="Facebook (coming soon)"
+                className="h-5 w-5"
+              />
+            </span>
+          </div>
         </nav>
       </div>
     </header>
   );
 }
-
 function Hero({ onCtaClick }: { onCtaClick: () => void }) {
   const [which, setWhich] = useState<"before" | "after">("after");
   const src = which === "after" ? MEDIA.videoAfter : MEDIA.videoBefore;
