@@ -150,15 +150,15 @@ const faq: { q: string; a: string }[] = [
   },
   {
     q: "What engines/boats are supported?",
-    a: "ToonTail currently works with select Mercury 250-400 HP outboards on pontoons and tritoons. Additional tails are in development for high-HP Yamaha motors and 90-150 HP Mercury/Yamaha motors.",
+    a: "ToonTail currently works with select Mercury 150-400 HP outboards on pontoons and tritoons. Additional tails are in development for high-HP Yamaha motors and 90-150 HP Mercury/Yamaha motors.",
   },
   {
     q: "How is it installed?",
-    a: "A reinforced, removable 316 stainless bracket clamps to the anti-ventilation plate or engine bracket. See installation instructions for torque specs and step-by-step.",
+    a: "A reinforced, removable 316 stainless bracket clamps (no drilling required) to the anti-ventilation plate or engine bracket. It can be installed or removed with in a few minutes. See installation instructions for torque specs and step-by-step.",
   },
   {
     q: "Can I tune the tail height and cleanliness?",
-    a: "Yes: slight trim adjustments can significantly change the jet angle, giving you control over height and distance; an optional gill/interceptor (coming soon) can boost head pressure for taller tails.",
+    a: "Yes: slight trim adjustments can significantly change the jet angle, giving you control over height and distance; Performance may very depending on prop size, speed and outboard power.",
   },
   {
     q: "Is it made in the USA?",
@@ -166,7 +166,7 @@ const faq: { q: string; a: string }[] = [
   },
   {
     q: "Where can I buy one?",
-    a: "Order the Mercury 250-400 HP model here. For other engines, join the waitlist to get in line for the Founder's run.",
+    a: "Order the Mercury 150-400 HP models here. Join the waitlist or email info@toontail.com to ask for a custom build or inquire about other motor options.",
   },
 ];
 
@@ -837,7 +837,7 @@ Let’s go!! Thanks for being awesome!!
           </div>
         </Section>
 
-        <Section id="more-angles" title="More angles" eyebrow="Close-ups & alternates">
+        <Section id="more-angles" title="More angles" eyebrow="Alternate Photos may include prototype versions. Product Color will differ, the final design and performance is consistent">
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
             {EXTRAS.map((src) => (
               <img key={src} src={src} className="aspect-[4/3] w-full object-cover rounded-xl border" alt="ToonTail extra" />
