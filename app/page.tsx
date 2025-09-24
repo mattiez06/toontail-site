@@ -22,6 +22,7 @@ const EXTRAS = [
   "/media/With_ToonTail.jpeg",
   "/media/Without_ToonTail.jpeg",
   "/media/ToonTail_Logo.jpeg",
+  "/media/toontailnight.jpeg",
 ];
 
 // Default product image
