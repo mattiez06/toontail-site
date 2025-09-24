@@ -31,7 +31,7 @@ export default function InstallGuidePage(): JSX.Element {
       <section className="max-w-5xl mx-auto px-4 py-10">
         <h1 className="text-3xl md:text-4xl font-extrabold">ToonTail Install Guide</h1>
         <p className="mt-2 text-slate-600">
-          Model: <strong>Mercury 250–400 HP</strong> (pontoon/tritoon). Version 0.9.
+          Model: <strong>Mercury 150–400 HP</strong> (pontoon/tritoon). Version 0.9.
         </p>
 
         {/* Intro / Safety */}
@@ -41,7 +41,7 @@ export default function InstallGuidePage(): JSX.Element {
             <li>Engine off; key removed; battery disconnect if applicable.</li>
             <li>Use eye protection and gloves. Work on a level surface.</li>
             <li>Follow your engine manufacturer’s guidelines and torque specs where applicable.</li>
-            <li>After installation, re-check all fasteners after the first outing.</li>
+            <li>After installation, re-check all fasteners and fitment after the first 5 min and continue to check with increasing intervals.</li>
           </ul>
         </div>
 
@@ -49,9 +49,9 @@ export default function InstallGuidePage(): JSX.Element {
         <div className="mt-8">
           <h2 className="text-xl font-bold">Compatibility</h2>
           <ul className="list-disc pl-5 mt-2 space-y-1">
-            <li>Designed for Mercury 250–400 HP outboards on pontoon/tritoon setups.</li>
+            <li>Designed for Mercury 150–400 HP outboards on pontoon/tritoon setups.</li>
             <li>Mounts to the anti-ventilation plate (or bracket location per kit).</li>
-            <li>Clearance required: ensure full steering/trim range without interference.</li>
+            <li>Clearance required: ensure full steering/trim range without propeller interference.</li>
           </ul>
         </div>
 
@@ -62,6 +62,7 @@ export default function InstallGuidePage(): JSX.Element {
             <li>ToonTail main assembly (black finish)</li>
             <li>316 stainless mounting bracket</li>
             <li>316 stainless hardware (bolts, washers, nyloc nuts)</li>
+            <li>Rubber seal gasket</li>
             <li>Installation overview card</li>
           </ul>
         </div>
@@ -71,40 +72,34 @@ export default function InstallGuidePage(): JSX.Element {
           <h2 className="text-xl font-bold">Tools you’ll need</h2>
           <ul className="list-disc pl-5 mt-2 space-y-1">
             <li>Socket set & open-end wrenches (metric/SAE per your kit)</li>
-            <li>Torque wrench (light-duty range)</li>
-            <li>Straightedge or small level</li>
-            <li>Blue threadlocker (medium strength)</li>
-            <li>Non-permanent marker or painter’s tape for alignment marks</li>
+            <li>Torque wrench strongly recomended (light-duty range)</li>
+            <li>Blue threadlocker included (medium strength)</li>
+            <li>Permanent marker to mark origional install placement recomended</li>
           </ul>
         </div>
 
         {/* Install Steps */}
         <div className="mt-8">
-          <h2 className="text-xl font-bold">Install steps (approx. 30–45 minutes)</h2>
+          <h2 className="text-xl font-bold">Install steps (approx. 3–5 minutes)</h2>
           <ol className="list-decimal pl-5 mt-2 space-y-3">
             <li>
-              <span className="font-medium">Prep the area:</span> Trim the motor to neutral. Clean and dry
+              <span className="font-medium">Prep the area:</span> Disconect Battery, ensure Motor is off and in neutral. Clean and dry
               the anti-ventilation plate/bracket area.
             </li>
             <li>
               <span className="font-medium">Mock-up:</span> Hold the bracket in place, centered on the
-              engine. Confirm clearance with the prop hub, trim range, and steering.
+              engine. Confirm clearance with the prop hub, trim range, and steering. Mounting plate is a "snug" fit by design and may reauire slight force.
             </li>
             <li>
-              <span className="font-medium">Bracket alignment:</span> Use a straightedge so the outlet points
-              level with the waterline at neutral trim. Mark light alignment references.
+              <span className="font-medium">Bracket alignment:</span> Ensure the plate is square on the motor and clear of the propeller. Plate should mount 1/2 to 1" past motor fin.  Mark for future references.
             </li>
             <li>
-              <span className="font-medium">Mount the bracket:</span> Install the provided stainless bolts,
-              washers, and nyloc nuts. Snug them evenly—do not fully torque yet.
-            </li>
-            <li>
-              <span className="font-medium">Attach ToonTail:</span> Slide the ToonTail assembly onto the
-              bracket. Install fasteners with a dab of blue threadlocker.
+              <span className="font-medium">Mount the bracket:</span> Install the provided stainless bolts on bottom of plate to create a gap between the plate and motor fin. Install provided rubber seal into gap. Remove bolts from bottom of plate for install in top of plate. 
+              Use provided Bolts, washers, and nyloc nuts. Snug them evenly—do not fully torque yet.
             </li>
             <li>
               <span className="font-medium">Final alignment:</span> Sight the outlet so it is parallel to
-              the keel line. Ensure there’s no interference at full port/starboard and trim up/down.
+              the keel line. Ensure there’s no interference with propeller at full port/starboard and trim up/down.
             </li>
             <li>
               <span className="font-medium">Torque fasteners:</span> Tighten evenly to the hardware
@@ -117,11 +112,11 @@ export default function InstallGuidePage(): JSX.Element {
             </li>
             <li>
               <span className="font-medium">Lake test:</span> Start with neutral trim. Bring the boat on
-              plane and gradually add trim to increase tail height and distance.
+              plane and gradually add power to increase tail height and distance. Check fitment and location promptly after first test
             </li>
             <li>
               <span className="font-medium">Post-test recheck:</span> Inspect all hardware after your first
-              session and again after ~5 hours of use.
+              session and again after ~1 hour and 5 hours of use. Repeat all steps if uninstalling and reinstalling for later use. 
             </li>
           </ol>
         </div>
@@ -142,7 +137,7 @@ export default function InstallGuidePage(): JSX.Element {
           <h2 className="text-xl font-bold">Maintenance</h2>
           <ul className="list-disc pl-5 mt-2 space-y-1">
             <li>Rinse after use, especially in brackish/salt water.</li>
-            <li>Inspect fasteners after first outing, then every 25 hours.</li>
+            <li>Inspect fasteners after first outing, then every 5 hours.</li>
             <li>Check for any signs of loosening, wear, or interference.</li>
           </ul>
         </div>
