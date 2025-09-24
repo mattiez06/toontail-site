@@ -764,10 +764,17 @@ function ToonTailLanding(): JSX.Element {
         <Nav onOpenCart={() => setCartOpen(true)} />
         <Hero onCtaClick={() => document.getElementById("estimator")?.scrollIntoView({ behavior: "smooth" })} />
 
-        <Section id="how" title="What is ToonTail?" eyebrow="Turn wake into wow">
+        <Section id="how" title="What is ToonTail?" eyebrow="SSpecial shout-out to the Facebook group Tritoon and Pontoon Performance! You all are awesome!!
+Thank you to Kyle, Chad, Will, James, Allen, Adam, Doug, John, Michael, Todd, Terry, Cyle, and others for the great comments and support in helping bring 
+something unique to the Tooners out there!
+
+Top comment: “It’s ridiculous and unnecessary — which is exactly why every guy should want it!”
+
+Let’s go!! Thanks for being awesome!!
+- Matt** ">
           <p className="text-lg md:text-xl max-w-3xl">
             ToonTail is a bolt-on water-jet accessory engineered for pontoons and tritoons. It captures a small amount of thrust from the prop and
-            redirects it through a tuned, efficient outlet to create a clean, dramatic rooster tail — without sacrificing performance. Got tail? Get ToonTail!
+            redirects it through a tuned, efficient outlet to create a clean, dramatic rooster tail — with minimal impact to performance. Got tail? Get ToonTail!
           </p>
         </Section>
 
