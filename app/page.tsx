@@ -917,7 +917,7 @@ Let’s go!! Thanks for being awesome!!
         <Section id="cta" title="Join the waitlist" eyebrow="Get updates first">
           <div className="p-6 rounded-2xl bg-white shadow-sm border border-slate-100">
             <p className="text-slate-700">
-              Email <a className="underline" href="mailto:info@toontail.com">info@toontail.com</a> to join the Founder's run.
+              Email <a className="underline" href="mailto:info@toontail.com">info@toontail.com</a> for support, more info or to ask about custom builds.
             </p>
           </div>
         </Section>
