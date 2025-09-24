@@ -366,7 +366,7 @@ function Nav({ onOpenCart }: { onOpenCart: () => void }) {
         {/* Left: Logo */}
         <div className="flex items-center gap-3">
           <Logo className="h-8 w-8" />
-          <span className="font-bold tracking-wide">ToonTail</span>
+          <span className="font-bold tracking-wide">ToonTail™</span>
         </div>
 
         {/* Right: Nav links + socials */}
