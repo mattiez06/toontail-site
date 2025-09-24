@@ -49,15 +49,36 @@ type Product = {
 
 const PRODUCTS: Product[] = [
   {
-    id: "tt-mercury-300-350-400 verado",
-    name: "ToonTail for Mercury 300-350-400 HP verado",
-    subtitle: "Verado & compatible models (pontoon/tritoon)",
+    id: "tt-mercury-L6 Supercharged 350-400 verado",
+    name: "ToonTail for Mercury L6 Supercharged 350-400 HP verado",
+    subtitle: "2015 to 2019 models with the 5.44HD Gear Case ",
     status: "in_stock",
     priceCents: 29999,
     compareAtCents: 49999,
     saleLabel: "Founders Run",
     // ⬇️ Replace with your live Stripe Payment Link
     paymentLink: "https://buy.stripe.com/4gMeVdfmT5cg63Ufwu9Ve00",
+    img: PRODUCT_IMAGE_DEFAULT,
+  },
+  {
+    id: "tt-Mercury 4.6l V8 250hp 300hp",
+    name: "Current Model Mercury V8 Verado ",
+    subtitle: "Prototype - join waitlist",
+    status: "coming_soon",
+    img: PRODUCT_IMAGE_DEFAULT,
+  },
+  {
+    id: "tt-Mercury 5.7L V10 350hp 400hp 425hp",
+    name: "Current Model Mercury V10 Verado",
+    subtitle: "Prototype - join waitlist",
+    status: "coming_soon",
+    img: PRODUCT_IMAGE_DEFAULT,
+  },
+  {
+    id: "tt-Mercury 250hp 300hp Pro L6 Supercharged ",
+    name: "2011 - 2017 Models with the 4.8 Gearcase",
+    subtitle: "Prototype - join waitlist",
+    status: "coming_soon",
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
@@ -77,27 +98,6 @@ const PRODUCTS: Product[] = [
     priceCents: 2999,
     paymentLink: "https://buy.stripe.com/14A00jeiP48c3VM3NM9Ve01",
     img: MERCH.tee,
-  },
-  {
-    id: "tt-yamaha-90-150",
-    name: "ToonTail Mini - Yamaha 90-150 HP",
-    subtitle: "Prototype - join waitlist",
-    status: "coming_soon",
-    img: PRODUCT_IMAGE_DEFAULT,
-  },
-  {
-    id: "tt-yamaha-225-425",
-    name: "ToonTail Magnum - Yamaha 225-425 HP",
-    subtitle: "Prototype - join waitlist",
-    status: "coming_soon",
-    img: PRODUCT_IMAGE_DEFAULT,
-  },
-  {
-    id: "tt-mercury-90-150",
-    name: "ToonTail Mini - Mercury 90-150 HP",
-    subtitle: "Prototype - join waitlist",
-    status: "coming_soon",
-    img: PRODUCT_IMAGE_DEFAULT,
   },
 ];
 
