@@ -121,6 +121,14 @@ const PRODUCTS: Product[] = [
     paymentLink: "https://buy.stripe.com/14A00jeiP48c3VM3NM9Ve01",
     img: MERCH.tee,
   },
+   {
+    id: "tt-ToonTail Night Light",
+    name: "Coming Soon ToonTail Night Light'",
+    subtitle: "RGB Led Light ring for your Toon Tail !'",
+    status: "in_Testing",
+    priceCents: 149.99,
+    img: toontailnightlight.jpg,
+  },
 ];
 
 type CartLine = { productId: string; qty: number };
