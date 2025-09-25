@@ -126,7 +126,7 @@ const PRODUCTS: Product[] = [
     name: "Coming Soon ToonTail Night Light'",
     subtitle: "RGB Led Light ring for your Toon Tail !'",
     status: "coming_soon",
-    img: toontailnightlight.jpg,
+    img: "/media/toontailnightlight.jpg",
   },
 ];
 
