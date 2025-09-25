@@ -121,12 +121,12 @@ const PRODUCTS: Product[] = [
     paymentLink: "https://buy.stripe.com/14A00jeiP48c3VM3NM9Ve01",
     img: MERCH.tee,
   },
-   {
-    id: "tt-ToonTail Night Light",
-    name: "Coming Soon ToonTail Night Light'",
-    subtitle: "RGB Led Light ring for your Toon Tail !'",
+{
+    id: "tt-night-light",
+    name: "ToonTail Night Light — Coming Soon",
+    subtitle: "RGB LED light ring for your ToonTail!",
     status: "coming_soon",
-    img: "/media/toontailnightlight.jpg",
+    img: "/media/toontailnightlight.jpg", 
   },
 ];
 
