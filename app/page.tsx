@@ -154,7 +154,7 @@ function formatCents(n?: number) {
 const faq: { q: string; a: string }[] = [
   {
     q: "Will ToonTail affect performance or engine?",
-    a: "Designed to leverage existing thrust aft of the prop without materially impacting normal engine characteristics; we target minimal speed impact at cruise. Always monitor engine temps and follow manufacturer guidelines.",
+    a: "Designed to leverage existing thrust aft of the prop without materially impacting normal engine characteristics; we target minimal speed impact at cruise. Please install with care or paint scratches may occure. Always monitor engine temps and follow manufacturer guidelines.",
   },
   {
     q: "What engines/boats are supported?",
