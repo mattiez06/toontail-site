@@ -72,7 +72,6 @@ const PRODUCTS: Product[] = [
     // ⬇️ Replace with your live Stripe Payment Link
     paymentLink: "https://buy.stripe.com/eVq5kDeiPeMQ9g6cki9Ve07",
     img: PRODUCT_IMAGE_DEFAULT,
-    img: PRODUCT_IMAGE_DEFAULT,
   },
   {
     id: "tt-Mercury 5.7L V10 350hp 400hp 425hp",
@@ -84,7 +83,6 @@ const PRODUCTS: Product[] = [
     saleLabel: "Founders Run",
     // ⬇️ Replace with your live Stripe Payment Link
     paymentLink: "https://buy.stripe.com/5kQbJ14IfdIM77Yfwu9Ve06",
-    img: PRODUCT_IMAGE_DEFAULT,
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
@@ -98,7 +96,6 @@ const PRODUCTS: Product[] = [
     // ⬇️ Replace with your live Stripe Payment Link
     paymentLink: "https://buy.stripe.com/3cI7sL5Mj3484ZQcki9Ve05",
     img: PRODUCT_IMAGE_DEFAULT,
-    img: PRODUCT_IMAGE_DEFAULT,
   },
    {
     id: "tt-Mercury 150hp 150hp Pro XS 3.0L ",
@@ -110,7 +107,6 @@ const PRODUCTS: Product[] = [
     saleLabel: "Founders Run",
     // ⬇️ Replace with your live Stripe Payment Link
     paymentLink: "https://buy.stripe.com/6oUaEXfmT2048c2cki9Ve04",
-    img: PRODUCT_IMAGE_DEFAULT,
     img: PRODUCT_IMAGE_DEFAULT,
   },
   {
