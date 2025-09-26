@@ -169,6 +169,10 @@ function formatCents(n?: number) {
 /* -------------------- FAQ DATA -------------------- */
 const faq: { q: string; a: string }[] = [
   {
+    q: "What is the order process for getting a ToonTaol?",
+    a: "We just started offering these crazy things to you Tonners on 9/26. A handfull of Merc Verado 350 - 400hp models are in stock and ready to ship with a delivery eta of 7-10 buisness days. All other models are made to order with an eta of 10-14 buisness days. Email Info@ToonTail.com for more info, delivery eta's or custom builds.",
+  },
+  {
     q: "Will ToonTail affect performance or engine?",
     a: "Designed to leverage existing thrust aft of the prop without materially impacting normal engine characteristics; we target minimal speed impact at cruise. Please install with care or paint scratches may occure. Always monitor engine temps and follow manufacturer guidelines.",
   },
