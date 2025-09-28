@@ -39,7 +39,7 @@ type Product = {
   id: string;
   name: string;
   subtitle?: string;
-  status: "in_stock" | "coming_soon";
+  status: "in_stock" | "coming_soon" | "made_to_order";
   priceCents?: number;
   compareAtCents?: number;
   saleLabel?: string;
@@ -53,7 +53,7 @@ const PRODUCTS: Product[] = [
     id: "tt-mercury-L6 Supercharged 350-400 verado",
     name: "ToonTail for Mercury L6 Supercharged 350-400 HP verado",
     subtitle: "2015 to 2019 models with the 5.44HD Gear Case ",
-    status: "30 day ETA",
+    status: "made_to_order",
     priceCents: 29999,
     compareAtCents: 49999,
     saleLabel: "Founders Run",
@@ -65,7 +65,7 @@ const PRODUCTS: Product[] = [
     id: "tt-Mercury 4.6l V8 250hp 300hp",
     name: "Toon Tail for Mercury 4.6l V8 250hp 300hp",
     subtitle: "Current Model Mercury V8 Verado ",
-    status: "30 day ETA",
+    status: "made_to_order",
     priceCents: 29999,
     compareAtCents: 49999,
     saleLabel: "Founders Run",
@@ -77,7 +77,7 @@ const PRODUCTS: Product[] = [
     id: "tt-Mercury 5.7L V10 350hp 400hp 425hp",
     name: "Toon Tail for Mercury 5.7L V10 350hp 400hp 425hp",
     subtitle: "Current Model Mercury V10 Verado",
-    status: "30 day ETA",
+    status: "made_to_order",
     priceCents: 29999,
     compareAtCents: 49999,
     saleLabel: "Founders Run",
@@ -89,7 +89,7 @@ const PRODUCTS: Product[] = [
     id: "tt-Mercury 250hp 300hp Pro L6 Supercharged ",
     name: "Toon Tail for Mercury 250hp 300hp Pro L6 Supercharged",
     subtitle: "2011 - 2017 Models with the 4.8 Gearcase",
-    status: "30 day ETA",
+    status: "made_to_order",
     priceCents: 29999,
     compareAtCents: 49999,
     saleLabel: "Founders Run",
@@ -101,7 +101,7 @@ const PRODUCTS: Product[] = [
     id: "tt-Mercury 150hp 150hp Pro XS 3.0L ",
     name: "Toon Tail for Mercury 150hp 150hp Pro XS 3.0L",
     subtitle: "2011 - Current Models with 4.9 Gearcase",
-    status: "30 day ETA",
+    status: "made_to_order",
     priceCents: 29999,
     compareAtCents: 49999,
     saleLabel: "Founders Run",
