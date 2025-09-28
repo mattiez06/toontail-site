@@ -182,12 +182,13 @@ function formatCents(n?: number) {
 /* -------------------- FAQ DATA -------------------- */
 const faq: { q: string; a: string }[] = [
   {
-    q: "How long is the wait for getting a ToonTail?",
-    a: "We just started offering these crazy things to you Tonners on 9/26 and sold a bunch of them Day 1. To make sure we dont over promise and under deliver. Future orders will be deliverd within 30 days of purchase. Email Info@ToonTail.com for more info, delivery eta's or custom builds.",
+    q: "How long is the wait to receive a ToonTail?",
+a: "We officially started offering these wild add-ons to the ToonTail crew on 9/26 and had an awesome Day 1 — a bunch sold right away! To keep from over-promising and under-delivering, new orders are shipped within 30 days of purchase. For more details, delivery ETAs, or custom build requests, email us anytime at Info@ToonTail.com."
+.",
   },
   {
     q: "Will ToonTail affect performance or engine?",
-    a: "Designed to leverage existing thrust aft of the prop without materially impacting normal engine characteristics; we target minimal speed impact at cruise. Please install with care or paint scratches may occure. Always monitor engine temps and follow manufacturer guidelines.",
+    a: "Designed to leverage existing thrust aft of the prop without materially impacting normal engine characteristics; we target minimal speed impact at cruise. Please install with care or paint scratches may occure. Always monitor engine temps and follow engine manufacturer guidelines.",
   },
   {
     q: "What engines/boats are supported?",
@@ -203,7 +204,7 @@ const faq: { q: string; a: string }[] = [
   },
   {
     q: "Is it made in the USA?",
-    a: "You bet your Ass it is — designed and built by those Hot Dish fuled hard workin folks in Minnesota.",
+    a: "You bet your Ass it is — designed and built by Two Hot Dish fuled, hard workin folks from Minnesota.",
   },
   {
     q: "Where can I buy one?",
