@@ -550,65 +550,108 @@ function Watermark() {
 
 /* -------------------- SHOP -------------------- */
 function Shop({ onAdd }: { onAdd: (p: Product) => void }) {
+  // in_stock and made_to_order can be purchased now
+  const PURCHASABLE_STATUSES: ProductStatus[] = ["in_stock", "made_to_order"];
+
   return (
     <Section id="shop" title="Shop ToonTail" eyebrow="Order now or join the waitlist">
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {PRODUCTS.map((p) => (
-          <div key={p.id} className="rounded-2xl border bg-white overflow-hidden flex flex-col">
-            <div className="relative">
-              <img src={p.img || PRODUCT_IMAGE_DEFAULT} alt={p.name} className="w-full aspect-[4/3] object-cover" />
-              <img src={MEDIA.logo} alt="" className="pointer-events-none select-none absolute bottom-2 right-2 w-16 opacity-30" />
-            </div>
+        {PRODUCTS.map((p) => {
+          const meta = STATUS_META[p.status];
+          const isPurchasable = PURCHASABLE_STATUSES.includes(p.status);
+          const showBuyButton = isPurchasable && !!p.paymentLink;
 
-            <div className="p-5 flex-1 flex flex-col">
-              <div className="flex items-center justify-between gap-2">
-                <h3 className="font-semibold text-lg">{p.name}</h3>
-                <span className={`text-[11px] font-semibold px-2 py-1 rounded ${p.status === "in_stock" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
-                  {p.status === "in_stock" ? "In stock" : "Coming soon"}
-                </span>
+          return (
+            <div key={p.id} className="rounded-2xl border bg-white overflow-hidden flex flex-col">
+              <div className="relative">
+                <img
+                  src={p.img || PRODUCT_IMAGE_DEFAULT}
+                  alt={p.name}
+                  className="w-full aspect-[4/3] object-cover"
+                />
+                <img
+                  src={MEDIA.logo}
+                  alt=""
+                  className="pointer-events-none select-none absolute bottom-2 right-2 w-16 opacity-30"
+                />
               </div>
 
-              {p.subtitle && <p className="text-sm text-slate-600 mt-1">{p.subtitle}</p>}
+              <div className="p-5 flex-1 flex flex-col">
+                <div className="flex items-center justify-between gap-2">
+                  <h3 className="font-semibold text-lg">{p.name}</h3>
 
-              <div className="mt-3 text-sm text-slate-700">
-                {p.priceLabel ? (
-                  <div className="font-medium">{p.priceLabel}</div>
-                ) : p.priceCents != null ? (
-                  p.compareAtCents && p.compareAtCents > p.priceCents ? (
-                    <div className="flex items-center flex-wrap gap-2">
-                      <span className="font-semibold">{formatCents(p.priceCents)}</span>
-                      <span className="line-through text-slate-400">{formatCents(p.compareAtCents)}</span>
-                      <span className="text-emerald-700 text-[11px] font-semibold px-2 py-0.5 bg-emerald-100 rounded-full">{p.saleLabel || "Sale"}</span>
+                  {/* ✅ Status badge now respects made_to_order */}
+                  <span
+                    className={`text-[11px] font-semibold px-2 py-1 rounded ${meta.badgeClass}`}
+                    title={meta.label}
+                  >
+                    {meta.label}
+                    {/* If you added p.etaDays and want to show it for made_to_order: */}
+                    {/* {p.status === "made_to_order" && p.etaDays ? ` • ~${p.etaDays} days` : ""} */}
+                  </span>
+                </div>
+
+                {p.subtitle ? (
+                  <p className="text-sm text-slate-600 mt-1">{p.subtitle}</p>
+                ) : null}
+
+                {/* price area (unchanged—keep your own UI if different) */}
+                <div className="mt-3">
+                  {typeof p.priceCents === "number" ? (
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-xl font-semibold">
+                        ${(p.priceCents / 100).toFixed(2)}
+                      </span>
+                      {typeof p.compareAtCents === "number" && p.compareAtCents > p.priceCents ? (
+                        <span className="text-sm text-slate-400 line-through">
+                          ${(p.compareAtCents / 100).toFixed(2)}
+                        </span>
+                      ) : null}
+                      {p.saleLabel ? (
+                        <span className="ml-auto text-[11px] font-semibold px-2 py-1 rounded bg-blue-100 text-blue-800">
+                          {p.saleLabel}
+                        </span>
+                      ) : null}
                     </div>
-                  ) : (
-                    <div className="font-medium">{formatCents(p.priceCents)}</div>
-                  )
-                ) : (
-                  <div className="text-slate-500">Price TBD</div>
-                )}
-              </div>
+                  ) : null}
+                </div>
 
-              <div className="mt-4 flex gap-2">
-                {p.status === "in_stock" ? (
-                  <button onClick={() => onAdd(p)} className="flex-1 px-4 py-2 rounded-xl bg-sky-600 text-white font-medium hover:bg-sky-700">
-                    Add to cart
-                  </button>
-                ) : (
-                  <a className="flex-1 px-4 py-2 rounded-xl border font-medium hover:border-slate-400 text-center" href={`mailto:info@toontail.com?subject=ToonTail%20waitlist%20-%20${encodeURIComponent(p.name)}`}>
-                    Join waitlist
-                  </a>
-                )}
+                {/* actions */}
+                <div className="mt-5 flex gap-3">
+                  {showBuyButton ? (
+                    // ✅ Made to Order or In Stock → show Buy Now
+                    <a
+                      href={p.paymentLink}
+                      className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold border bg-black text-white hover:opacity-90"
+                    >
+                      Buy Now
+                    </a>
+                  ) : isPurchasable ? (
+                    // Purchasable status but no paymentLink → fall back to Add to Cart
+                    <button
+                      onClick={() => onAdd(p)}
+                      className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold border bg-black text-white hover:opacity-90"
+                    >
+                      Add to Cart
+                    </button>
+                  ) : (
+                    // coming_soon → waitlist/notify
+                    <button
+                      className="inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold border bg-slate-100 text-slate-700 cursor-not-allowed"
+                      disabled
+                    >
+                      Join Waitlist
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
-
-      <p className="text-xs text-slate-500 mt-4">Taxes and shipping calculated at checkout. U.S. orders only for initial run.</p>
     </Section>
   );
 }
-
 /* -------------------- CART DRAWER (Stripe + PayPal/Venmo) -------------------- */
 function CartDrawer({
   open,
