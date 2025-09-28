@@ -35,17 +35,30 @@ const MERCH = {
 };
 
 /* -------------------- PRODUCT / CART DATA -------------------- */
-type Product = {
+type ProductStatus = "in_stock" | "coming_soon" | "made_to_order";
+
+export type Product = {
   id: string;
   name: string;
   subtitle?: string;
-  status: "in_stock" | "coming_soon" | "made_to_order";
+  status: ProductStatus;
   priceCents?: number;
   compareAtCents?: number;
   saleLabel?: string;
   priceLabel?: string;
   paymentLink?: string;
   img?: string;
+};
+
+type StatusMeta = {
+  label: string;
+  badgeClass: string;
+};
+
+const STATUS_META: Record<ProductStatus, StatusMeta> = {
+  in_stock: { label: "In Stock", badgeClass: "bg-emerald-100 text-emerald-800" },
+  coming_soon: { label: "Coming Soon", badgeClass: "bg-amber-100 text-amber-800" },
+  made_to_order: { label: "Made to Order", badgeClass: "bg-sky-100 text-sky-800" },
 };
 
 const PRODUCTS: Product[] = [
