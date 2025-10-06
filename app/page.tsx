@@ -183,8 +183,7 @@ function formatCents(n?: number) {
 const faq: { q: string; a: string }[] = [
   {
     q: "How long is the wait to receive a ToonTail?",
-a: "We officially started offering these wild add-ons to the ToonTail crew on 9/26 and had an awesome Day 1 — a bunch sold right away! To keep from over-promising and under-delivering, new orders are shipped within 30 days of purchase. For more details, delivery ETAs, or custom build requests, email us anytime at Info@ToonTail.com."
-.",
+a: "We officially started offering these wild add-ons to the ToonTail crew on 9/26 and had an awesome Day 1 — a bunch sold right away! To keep from over-promising and under-delivering, new orders are shipped within 30 days of purchase. For more details, delivery ETAs, or custom build requests, email us anytime at Info@ToonTail.com.",
   },
   {
     q: "Will ToonTail affect performance or engine?",
