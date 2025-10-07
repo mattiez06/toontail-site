@@ -965,8 +965,8 @@ Let’s go!! Thanks for being awesome!!
           <div className="grid lg:grid-cols-2 gap-6">
             <Card>
               <h3 className="text-lg font-semibold">Photo — Before / After</h3>
-              <p className="text-slate-600 text-sm mb-3">Drag the slider to compare.</p>
               <BeforeAfter beforeSrc={MEDIA.photoBefore} afterSrc={MEDIA.photoAfter} />
+              <p className="text-slate-600 text-sm mb-3">Drag the slider to compare.</p>
             </Card>
 
             <Card>
